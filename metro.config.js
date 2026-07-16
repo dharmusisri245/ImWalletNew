@@ -9,3 +9,16 @@ const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 const config = {};
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+
+
+
+
+
+// const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+// const { withNitroModules } = require('react-native-nitro-modules/metro');
+
+// const defaultConfig = getDefaultConfig(__dirname);
+
+// module.exports = withNitroModules(
+//   mergeConfig(defaultConfig, {})
+// );
