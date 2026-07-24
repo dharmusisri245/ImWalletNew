@@ -1,7 +1,7 @@
 
 // import React, { useState } from 'react';
 // import {
-
+// View,
 //   Text,
 //   Image,
 
@@ -10,12 +10,15 @@
 //   StyleSheet,
 
 //   Dimensions,
+//   StatusBar,
+//   ScrollView,
 // } from 'react-native';
 // import LinearGradient from 'react-native-linear-gradient';
 
 // import Feather from '@react-native-vector-icons/feather';
 // import MaterialCommunityIcons from '@react-native-vector-icons/material-design-icons';
 // import Svg, { Polyline, Circle, Path } from 'react-native-svg';
+// import QuickServices from '../../components/Dashboard/QuickServices';
 
 // const { width } = Dimensions.get('window');
 
@@ -208,13 +211,13 @@
 //         </View>
 
 //         {/* ---------- Quick Services ---------- */}
-//         <View style={styles.sectionRow}>
+//         {/* <View style={styles.sectionRow}>
 //           <Text style={styles.sectionTitle}>Quick Services</Text>
 //           <TouchableOpacity style={styles.viewAllRow}>
 //             <Text style={styles.viewAllText}>View All</Text>
 //             <Feather name="chevron-right" size={14} color="#2563EB" />
 //           </TouchableOpacity>
-//         </View>
+//         </View> */}
 
 //         {/* <View style={styles.servicesGrid}>
 //           {QUICK_SERVICES.map((s) => (
@@ -227,6 +230,7 @@
 //           ))}
 //         </View> */}
 
+//   <QuickServices/>
 //         {/* ---------- Performance + Recent Visits ---------- */}
 //         <View style={styles.twoColRow}>
 //           <View style={styles.colCard}>
@@ -711,212 +715,17 @@
 
 
 
-// import React, { useEffect, useState } from 'react';
-// import {
-//   SafeAreaView,
-//   ScrollView,
-//   StyleSheet,
-// } from 'react-native';
 
-// import DashboardHeader from '../../components/Dashboard/DashboardHeader';
-// import SearchBar from '../../components/Dashboard/SearchBar';
-// import NotificationCard from '../../components/Dashboard/notifications/NotificationCard';
-// import StatsCard from '../../components/Dashboard/StatsCard';
-// import TargetCard from '../../components/Dashboard/TargetCard';
-// import WeeklyChart from '../../components/Dashboard/WeeklyChart';
-// import RecentVisits from '../../components/Dashboard/RecentVisits';
-// import QuickActions from '../../components/Dashboard/QuickActions';
-// import QuickServices from '../../components/Dashboard/QuickServices';
-// import AttendanceCard from '../../components/Dashboard/AttendanceCard';
-// import MonthlyChart from '../../components/Dashboard/MonthlyChart';
 
-// import CameraCaptureModal, {
-//   CaptureResult
-// } from '../../components/Cameracapturemodal';
 
-// import PermissionService from '../../services/PermissionService';
 
-// import { Alert } from 'react-native';
-// // import CameraCaptureModal from '../../components/Cameracapturemodal';
 
-// const HomeScreen = () => {
-//   const [cameraVisible, setCameraVisible] = useState(false);
-//   const [attendanceMode, setAttendanceMode] = useState<'check-in' | 'check-out'>('check-in');
-//   const [submitting, setSubmitting] = useState(false);
-
-//   const [status, setStatus] = useState<
-//     'Checked In' | 'Checked Out' | 'Not Checked In'
-//   >('Not Checked In');
-
-//   const [checkInTime, setCheckInTime] = useState('--:--');
-
-//   const [workingHours, setWorkingHours] = useState('00h 00m');
-
-// useEffect(() => {
-//   console.log('✅ HomeScreen Mounted');
-// }, []);
-
-
-//   const openCaptureFlow = async () => {
-//     console.log("open capture camra is alreday on ")
-//     const { camera, location } =
-//       await PermissionService.requestCheckInPermissions();
-
-//     if (!camera || !location) {
-
-//       Alert.alert(
-//         'Permissions required',
-//         'Camera and location access are required.',
-//         [
-//           {
-//             text: 'Cancel'
-//           },
-//           {
-//             text: 'Settings',
-//             onPress: PermissionService.openAppSettings
-//           }
-//         ]
-//       );
-
-//       return;
-//     }
-
-//     setCameraVisible(true);
-
-//   }
-
-//   const handleCaptured = async (
-//     result: CaptureResult
-//   ) => {
-
-//     setSubmitting(true);
-
-//     try {
-
-//       console.log(result);
-
-//       // API
-
-//       setCameraVisible(false);
-
-//       Alert.alert(
-//         "Success",
-//         attendanceMode === "check-in"
-//           ? "Checked In"
-//           : "Checked Out"
-//       );
-
-//     } catch (e) {
-
-//     } finally {
-
-//       setSubmitting(false);
-
-//     }
-
-//   }
-
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <ScrollView
-//         showsVerticalScrollIndicator={false}
-//         contentContainerStyle={styles.content}>
-
-//         <DashboardHeader />
-
-//         <SearchBar />
-
-//         <NotificationCard />
-
-//         {/* <AttendanceCard /> */}
-
-//         {/* <AttendanceCard
-//           status="Not Checked In"
-//           checkInTime="09:30 AM"
-//           workingHours="00h 00m"
-//         /> */}
-
-//         <AttendanceCard
-
-//           status={status}
-
-//           checkInTime={checkInTime}
-
-//           workingHours={workingHours}
-
-//           onCheckIn={() => {
-//             setAttendanceMode("check-in");
-//             openCaptureFlow();
-//           }}
-
-
-//           // onCheckIn={() => {
-//           //   console.log("Check In clicked");
-//           // }}
-
-
-
-//           onCheckOut={() => {
-//             setAttendanceMode("check-out");
-//             openCaptureFlow();
-//           }}
-//         />
-
-//         <StatsCard />
-
-//         <TargetCard />
-//         <QuickServices />
-//         <WeeklyChart />
-
-//         <MonthlyChart />
-
-//         <RecentVisits />
-
-//         <QuickActions />
-
-//         <CameraCaptureModal
-//           visible={cameraVisible}
-//           mode={attendanceMode}
-//           onClose={() => setCameraVisible(false)}
-//           onCaptured={handleCaptured}
-//         />
-
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// };
-
-// export default HomeScreen;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#F5F7FA',
-//   },
-
-//   content: {
-//     padding: 16,
-//     paddingBottom: 30,
-//   },
-// });
-
-
-
-
-
-
-
-
-
-
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
 } from 'react-native';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import DashboardHeader from '../../components/Dashboard/DashboardHeader';
 import SearchBar from '../../components/Dashboard/SearchBar';
 import NotificationCard from '../../components/Dashboard/notifications/NotificationCard';
@@ -928,100 +737,113 @@ import QuickActions from '../../components/Dashboard/QuickActions';
 import QuickServices from '../../components/Dashboard/QuickServices';
 import AttendanceCard from '../../components/Dashboard/AttendanceCard';
 import MonthlyChart from '../../components/Dashboard/MonthlyChart';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import AttendanceStorage from '../../services/AttendanceStorage';
+import { useFrameCallback } from 'react-native-reanimated';
+
 
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
+  const [checkedIn, setCheckedIn] = useState(false);
+  const [activeMode, setActiveMode] = useState<'check-in' | 'check-out'>('check-in');
+  // console.log('✅ HomeScreen Mounted');
+  useFocusEffect(
+    useCallback(() => {
+      loadAttendanceStatus();
+    }, []),
+  );
 
+  // const loadAttendanceStatus = async () => {
+  //   const checkedIn = await AttendanceStorage.hasCheckedInToday();
+  //   const checkedOut = await AttendanceStorage.hasCheckedOutToday();
+  //   const lastAttendance = await AttendanceStorage.getLastAttendance();
 
+  //   if (checkedIn && !checkedOut) {
+  //     setCheckedIn(true);
+  //     setActiveMode('check-out');
+  //   } else {
+  //     setCheckedIn(false);
+  //     setActiveMode('check-in');
+  //   }
 
+  //   console.log(lastAttendance);
+  // };
+
+  const loadAttendanceStatus = async () => {
+  const lastAttendance =
+    await AttendanceStorage.getLastAttendance();
+
+  console.log('Last Attendance:', lastAttendance);
+
+  if (!lastAttendance) {
+    setCheckedIn(false);
+    setActiveMode('check-in');
+    return;
+  }
+
+  if (lastAttendance.type === 'check-in') {
+    setCheckedIn(true);
+    setActiveMode('check-out');
+  } else {
+    setCheckedIn(false);
+    setActiveMode('check-in');
+  }
+};
   return (
-    // <SafeAreaView style={styles.container}>
-    //   <ScrollView
-    //     showsVerticalScrollIndicator={false}
-    //     contentContainerStyle={styles.content}>
-
-    //     <DashboardHeader />
-
-    //     <SearchBar />
-
-    //     <NotificationCard />
-
-    //     {/* <AttendanceCard /> */}
-
-    //     <AttendanceCard
-    //       status="Not Checked In"
-    //       checkInTime="09:30 AM"
-    //       workingHours="00h 00m"
-    //     />
-
-
-
-    //     <StatsCard />
-
-    //     <TargetCard />
-    //     <QuickServices />
-    //     <WeeklyChart />
-
-    //     <MonthlyChart />
-
-    //     <RecentVisits />
-
-    //     <QuickActions />
-
-
-
-    //   </ScrollView>
-    // </SafeAreaView>
-
-
     <SafeAreaView style={styles.container}>
-      <ScrollView
+      <ScrollView contentContainerStyle={styles.content}>
 
-        contentContainerStyle={styles.content}>
-        {/* Step 1 */}
+        {console.log('1 DashboardHeader')}
         <DashboardHeader />
 
-         <SearchBar/>
+        {console.log('2 SearchBar')}
+        <SearchBar />
 
-        {/* Step 3 working  huge error aoccur here*/}
+        {console.log('3 NotificationCard')}
         <NotificationCard />
 
-        {/*  ERROR*/}
-        <AttendanceCard
+        {console.log('4 AttendanceCard')}
+        {/* <AttendanceCard
           status="Not Checked In"
           checkInTime="09:30 AM"
           workingHours="00h 00m"
-        /> 
-
-        {/* {/* Step 5 /} */}
-        <StatsCard />
-
-        {/* Step 6 */}
-        <TargetCard />
-
-        {/* Step 7  DANGROUS ERROR THROWING THIS COMPO */}
-        <QuickServices />
-
-        {/* Step 8 */}
-        <WeeklyChart />
-
-       
-        {/* working  */}
-        <MonthlyChart
-          achieved={142}
-          target={200}
+          onCheckIn={() => navigation.navigate('AttendanceScreen')}
+        /> */}
+        <AttendanceCard
+          status={
+            checkedIn
+              ? 'Checked In'
+              : 'Not Checked In'
+          }
+          checkInTime="09:30 AM"
+          workingHours="00h 00m"
+          onCheckIn={() => navigation.navigate('AttendanceScreen' as never)}
+          onCheckOut={() => navigation.navigate('AttendanceScreen' as never)}
         />
 
+        {console.log('5 StatsCard')}
+        <StatsCard />
 
-        {/* Step 10 */}
+        {console.log('6 TargetCard')}
+        <TargetCard />
+
+        {console.log('7 QuickServices')}
+        <QuickServices />
+
+        {console.log('8 WeeklyChart')}
+        <WeeklyChart />
+
+        {console.log('9 MonthlyChart')}
+        <MonthlyChart achieved={142} target={200} />
+
+        {console.log('10 RecentVisits')}
         <RecentVisits />
 
-        {/* Step 11 */}
+        {console.log('11 QuickActions')}
         <QuickActions />
       </ScrollView>
     </SafeAreaView>
-
-
   );
 };
 
@@ -1047,14 +869,3 @@ const styles = StyleSheet.create({
 
 
 
-
-// import {Text, View } from 'react-native'
-// import React from 'react'
-
-// export default function HomeScreen() {
-//   return (
-//     <View>
-//       <Text>HomeScreen</Text>
-//     </View>
-//   )
-// }

@@ -7,6 +7,7 @@ import AttendanceManagement from '../auth/screnn/Attendance/AttendanceManagement
 import LeaveManagement from '../auth/screnn/Attendance/LeaveManagement';
 import SettingsScreen from '../auth/screnn/Attendance/SettingsScreen';
 import EmployeeProfile from '../auth/screnn/Attendance/EmployeeProfile';
+import YourAttendanceHistoryScreen from '../Screen/Attendance/YourAttendanceHistoryScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,11 @@ const ProfileStack = () => {
         component={EmployeeProfile}
       />
 
+
+    <Stack.Screen
+        name="YourAttendanceHistory"
+        component={YourAttendanceHistoryScreen}
+      />
       <Stack.Screen
         name="AttendanceManagement"
         component={AttendanceManagement}

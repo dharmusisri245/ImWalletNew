@@ -67,10 +67,19 @@ const ProfileScreen = () => {
         />
 
         <MenuItem
-          icon="calendar"
-          title="Attendance"
-          onPress={() => navigation.navigate('AttendanceManagement')}
+          icon="clipboard"
+          title="Your Attendance History"
+          onPress={() => {
+            console.log("Attendance History Clicked");
+            navigation.navigate('YourAttendanceHistory');
+          }}
         />
+
+        {/* <MenuItem
+          icon="calendar"
+          title=" Your Attendance"
+          onPress={() => navigation.navigate('YourAttendanceHistory')}
+        /> */}
 
         <MenuItem
           icon="clipboard"

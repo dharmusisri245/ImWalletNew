@@ -222,7 +222,45 @@ class PermissionService {
     return status === RESULTS.GRANTED;
   }
 
+/**
+ * Request Camera + Location together
+ */
+async requestCheckInPermissions(): Promise<{
+  camera: boolean;
+  location: boolean;
+}> {
+  const camera = await this.requestCameraPermission();
+  const location = await this.requestLocationPermission();
 
+  return {
+    camera,
+    location,
+  };
+}
+
+
+
+async hasCameraPermission(): Promise<boolean> {
+  const permission =
+    Platform.OS === 'android'
+      ? PERMISSIONS.ANDROID.CAMERA
+      : PERMISSIONS.IOS.CAMERA;
+
+  const status = await check(permission);
+
+  return status === RESULTS.GRANTED;
+}
+
+async hasLocationPermission(): Promise<boolean> {
+  const permission =
+    Platform.OS === 'android'
+      ? PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+      : PERMISSIONS.IOS.LOCATION_WHEN_IN_USE;
+
+  const status = await check(permission);
+
+  return status === RESULTS.GRANTED;
+}
 
 
 
@@ -235,53 +273,6 @@ class PermissionService {
 }
 
 export default new PermissionService();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -87,6 +87,7 @@ import ReportsScreen from '../auth/screnn/ReportsScreen';
 import WalletScreen from '../auth/screnn/WalletScreen';
 import ProfileScreen from '../auth/screnn/ProfileScreen';
 import HomeStack from '../Stacks/HomeStack';
+import ProfileStack from '../Stacks/ProfileStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -163,7 +164,8 @@ export default function BottomTab() {
       <Tab.Screen name="Services" component={ServicesScreen} />
       <Tab.Screen name="Reports" component={ReportsScreen} />
       <Tab.Screen name="Wallet" component={WalletScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      {/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
+      <Tab.Screen name="Profile" component={ProfileStack} />
 
     </Tab.Navigator>
   );
