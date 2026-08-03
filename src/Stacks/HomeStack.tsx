@@ -11,27 +11,28 @@ import TargetScreen from '../Screen/servicesScreen/TargetScreen';
 import MyReportScreen from '../Screen/servicesScreen/MyReportScreen';
 import NotificationScreen from '../Screen/Dashboard/Notifications/NotificationScreen';
 import { Text, View } from 'react-native';
+import VendorDetails from '../Screen/servicesScreen/VendorDetails';
 
 const Stack = createNativeStackNavigator();
 
 export default function HomeStack() {
   function TestScreen() {
-  return (
-    <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
-      <Text>TEST SCREEN</Text>
-    </View>
-  );
-}
+    return (
+      <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
+        <Text>TEST SCREEN</Text>
+      </View>
+    );
+  }
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-       <Stack.Screen
+      <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
-      /> 
+      />
       {/* <Stack.Screen
       name='HomeScreen'
       component={TestScreen}
@@ -48,6 +49,11 @@ export default function HomeStack() {
       />
 
       <Stack.Screen
+        name='VenderDetails'
+        component={VendorDetails}
+      />
+
+      <Stack.Screen
         name="RegisteredScreen"
         component={RegisteredScreen}
       />
@@ -57,9 +63,9 @@ export default function HomeStack() {
         component={KycScreen}
       />
 
-      <Stack.Screen name='LeaveScreen' component={LeaveScreen}/>
-      <Stack.Screen name='MyReportScreen' component={MyReportScreen}/>
-      <Stack.Screen name='TargetScreen' component={TargetScreen}/>
+      <Stack.Screen name='LeaveScreen' component={LeaveScreen} />
+      <Stack.Screen name='MyReportScreen' component={MyReportScreen} />
+      <Stack.Screen name='TargetScreen' component={TargetScreen} />
       <Stack.Screen name='Notifications' component={NotificationScreen} />
     </Stack.Navigator>
   );

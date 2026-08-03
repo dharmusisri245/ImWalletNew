@@ -570,8 +570,8 @@ export default function KycScreen({ navigation }: Props) {
           )}
         </View>
 
-
-        {/* Footer CTA */}
+        <View style={styles.registerButtonWrap}>
+          {/* Footer CTA */}
         <View style={styles.footer}>
           <TouchableOpacity
             activeOpacity={0.85}
@@ -596,6 +596,10 @@ export default function KycScreen({ navigation }: Props) {
             </LinearGradient>
           </TouchableOpacity>
         </View>
+          </View>
+
+
+        
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );
@@ -623,6 +627,16 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
     zIndex: 2,
+    ...Platform.select({
+      ios: {
+        paddingHorizontal:-2,
+        paddingTop: 5,
+        paddingBottom: 3,
+      },
+      android: {
+      
+      },
+    }),
   },
   backButton: {
     width: 38,
@@ -632,9 +646,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.18)',
     marginRight: spacing.md,
+    ...Platform.select({
+      ios:{
+       marginLeft: 15,
+      },
+      android:{
+
+      }
+    })
   },
   headerTextWrap: {
     flex: 1,
+    ...Platform.select({
+      ios: {
+        margin:20,
+      },
+      android: {
+        marginLeft: 0,
+      },
+    }),
   },
   headerTitle: {
     fontSize: 19,
@@ -655,6 +685,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        marginRight: 15,
+      },
+      android: {
+        marginRight: 0,
+      },
+    }),
   },
 
   scrollContent: {
@@ -854,6 +892,14 @@ const styles = StyleSheet.create({
   },
   reviewIncompleteText: { flex: 1, fontSize: 11.5, color: colors.error, marginLeft: spacing.xs },
 
+
+
+
+  registerButtonWrap: {
+    paddingBottom: spacing.lg,
+    backgroundColor:'none'
+    
+  },
   footer: {
     position: 'absolute',
     bottom: 0,
@@ -870,6 +916,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 12,
     elevation: 6,
+    ...Platform.select({
+      ios: {
+        paddingTop: -2,
+        position: '',
+        
+      },
+      android: {
+        paddingBottom:0,
+      },
+    }),
   },
   registerButton: {
     borderRadius: radius.pill,

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
@@ -339,7 +339,7 @@ export default function RegisterUserScreen({ navigation }: Props) {
         </TouchableOpacity>
 
         <View style={styles.headerTextWrap}>
-          <Text style={styles.headerTitle}>Register User</Text>
+          <Text style={styles.headerTitle}>Register</Text>
           <Text style={styles.headerSubtitle}>Onboard a new vendor / shop</Text>
         </View>
 
@@ -582,7 +582,9 @@ export default function RegisterUserScreen({ navigation }: Props) {
             ) : (
               <View style={styles.registerButtonContent}>
                 <Text style={styles.registerButtonText}>Register</Text>
-                <FeatherIcon name="arrow-right" size={18} color={colors.white} />
+                <View style={styles.registerButtonIcon}>
+                  <FeatherIcon name="arrow-right" size={18} color={colors.white}  />
+                </View>
               </View>
             )}
           </LinearGradient>
@@ -621,6 +623,20 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
     zIndex: 2,
+    ...Platform.select({
+      ios: {
+        paddingTop: 0,
+        paddingHorizontal: -2,
+        paddingBottom: spacing.xl,
+        // marginBottom:spacing.md,
+        height: 115,
+        paddingBottom:15,
+      },
+      android: {
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    })
   },
   backButton: {
     width: 38,
@@ -630,9 +646,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.18)',
     marginRight: spacing.md,
+    ...Platform.select({
+      ios: {
+        marginLeft: 15,
+        // marginTop:30,
+      },
+      android: {},
+    }),
   },
+
+
+
   headerTextWrap: {
     flex: 1,
+    ...Platform.select({
+      ios: {
+        paddingTop: 0,
+      },
+      android: {
+        paddingTop: 0,
+      },
+    })
   },
   headerTitle: {
     fontSize: 19,
@@ -653,6 +687,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
+    ...Platform.select({
+      ios:{
+       marginRight: 15,
+      },
+      android:{
+      }
+    })
   },
 
   // ---- Scroll / layout -------------------------------------------------
@@ -878,7 +919,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.md,
     borderTopWidth: 1,
     borderTopColor: '#EFEAF8',
-    shadowColor: '#2B1E4D',
+    shadowColor: '#8b2497',
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.06,
     shadowRadius: 12,
@@ -894,6 +935,28 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 4,
+    ...Platform.select({
+      ios: {
+        paddingHorizontal: 0,
+        paddingVertical: 16,
+        paddingBottom: 16,
+        height: 80,
+
+      },
+      android: {
+        paddingHorizontal: 0,
+      },
+    }),
+  },
+  registerButtonIcon: {
+    ...Platform.select({
+      ios: {
+        paddingBottom: 26,
+      },
+      android: {
+        paddingTop: 0,
+      },
+    }),
   },
   registerButtonContent: {
     flexDirection: 'row',
@@ -908,8 +971,19 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 0.3,
     marginRight: spacing.sm,
+    ...Platform.select({
+      ios: {
+        marginRight: 10,
+        paddingBottom: 28,
+      },
+      android: {
+        marginRight: 0,
+      },
+    }),
   },
   disabledWrapper: {
     opacity: 0.65,
+    
+
   },
 });

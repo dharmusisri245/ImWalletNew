@@ -14,6 +14,7 @@ import {
   MMKVStorage,
   KeychainStorage,
 } from '../../storage';
+import LocationService from '../../services/LocationService';
 
 type Props = NativeStackScreenProps<any>;
 
@@ -31,6 +32,14 @@ const initializeApp = async () => {
 
     const locationGranted =
       await PermissionService.requestLocationPermission();
+      // Check if GPS is enabled
+      // const enabled= await LocationService.ensureGpsEnabled();
+      // console.log("GPS Enabled:", enabled);
+      // if(!enabled){
+      //   console.log("GPS is not enabled. Please enable GPS.");
+      //   return;
+      // }
+      // navigation.replace("Login");
 
     console.log("4. Location:", locationGranted);
 

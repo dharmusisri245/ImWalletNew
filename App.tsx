@@ -1,15 +1,14 @@
 import React from 'react';
 import RootNavigator from './src/rootNavigator/RootNavigator';
 import Toast from 'react-native-toast-message';
-
-
+import VisitDashboardScreen from './src/Screen/Visit/VisitDashboardScreen';
 export default function App() {
   return (
     <>
-    <RootNavigator/>
-    <Toast/>
+    {/* <RootNavigator/> */}
+    {/* <Toast/> */}
+    <VisitDashboardScreen/>
     </>
-   
   );
 }
 

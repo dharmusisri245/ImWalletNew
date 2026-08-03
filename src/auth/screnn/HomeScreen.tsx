@@ -747,6 +747,13 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [checkedIn, setCheckedIn] = useState(false);
   const [activeMode, setActiveMode] = useState<'check-in' | 'check-out'>('check-in');
+
+  const [summary, setSummary] = useState({
+    checkInTime: '',
+    checkOutTime: '',
+    workingHours: '00h 00m',
+  })
+
   // console.log('✅ HomeScreen Mounted');
   useFocusEffect(
     useCallback(() => {
@@ -754,42 +761,57 @@ const HomeScreen = () => {
     }, []),
   );
 
-  // const loadAttendanceStatus = async () => {
-  //   const checkedIn = await AttendanceStorage.hasCheckedInToday();
-  //   const checkedOut = await AttendanceStorage.hasCheckedOutToday();
-  //   const lastAttendance = await AttendanceStorage.getLastAttendance();
+  const formatTime = (timestamp?: string) => {
+    if (!timestamp) return '--:--';
 
-  //   if (checkedIn && !checkedOut) {
-  //     setCheckedIn(true);
-  //     setActiveMode('check-out');
-  //   } else {
-  //     setCheckedIn(false);
-  //     setActiveMode('check-in');
-  //   }
+    return new Date(timestamp).toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
 
-  //   console.log(lastAttendance);
-  // };
+
+  const lastAttendance = async () => {
+    const lastAttendance = await AttendanceStorage.getLastAttendance();
+  }
 
   const loadAttendanceStatus = async () => {
-  const lastAttendance =
-    await AttendanceStorage.getLastAttendance();
+    const lastAttendance =
+      await AttendanceStorage.getLastAttendance();
 
-  console.log('Last Attendance:', lastAttendance);
+    console.log('Last Attendance:', lastAttendance);
 
-  if (!lastAttendance) {
-    setCheckedIn(false);
-    setActiveMode('check-in');
-    return;
+    if (!lastAttendance) {
+      setCheckedIn(false);
+      setActiveMode('check-in');
+      return;
+    }
+
+    if (lastAttendance.type === 'check-in') {
+      setCheckedIn(true);
+      setActiveMode('check-out');
+    } else {
+      setCheckedIn(false);
+      setActiveMode('check-in');
+    }
+  };
+
+
+  const loadAttendance = async () => {
+    const data = await AttendanceStorage.getTodayAttendanceSummary();
+    setSummary(data)
   }
 
-  if (lastAttendance.type === 'check-in') {
-    setCheckedIn(true);
-    setActiveMode('check-out');
-  } else {
-    setCheckedIn(false);
-    setActiveMode('check-in');
-  }
-};
+  useFocusEffect(
+    useCallback(() => {
+      loadAttendanceStatus();
+      loadAttendance();
+    }, []),
+  );
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -804,22 +826,40 @@ const HomeScreen = () => {
         <NotificationCard />
 
         {console.log('4 AttendanceCard')}
+
+
+
         {/* <AttendanceCard
-          status="Not Checked In"
-          checkInTime="09:30 AM"
+          status={checkedIn ? 'Checked In' : 'Not Checked In'}
+          checkInTime={
+            lastAttendance?.type === 'check-in'
+              ? formatTime(lastAttendance.timestamp)
+              : '--:--'
+          }
           workingHours="00h 00m"
-          onCheckIn={() => navigation.navigate('AttendanceScreen')}
+          onCheckIn={() => navigation.navigate('AttendanceScreen' as never)}
+          onCheckOut={() => navigation.navigate('AttendanceScreen' as never)}
         /> */}
+
+
         <AttendanceCard
           status={
             checkedIn
               ? 'Checked In'
-              : 'Not Checked In'
+              : summary.checkOutTime
+                ? 'Checked Out'
+                : 'Not Checked In'
           }
-          checkInTime="09:30 AM"
-          workingHours="00h 00m"
-          onCheckIn={() => navigation.navigate('AttendanceScreen' as never)}
-          onCheckOut={() => navigation.navigate('AttendanceScreen' as never)}
+          checkInTime={summary.checkInTime}
+          checkOutTime={summary.checkOutTime}
+          workingHours={summary.workingHours}
+          onCheckIn={() =>
+            navigation.navigate('AttendanceScreen' as never)
+          }
+
+          onCheckOut={() =>
+            navigation.navigate('AttendanceScreen' as never)
+          }
         />
 
         {console.log('5 StatsCard')}
@@ -858,7 +898,7 @@ const styles = StyleSheet.create({
 
   content: {
     padding: 16,
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
 });
 
