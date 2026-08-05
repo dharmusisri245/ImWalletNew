@@ -51,8 +51,12 @@ react {
     // hermesFlags = ["-O", "-output-source-map"]
 
     /* Autolinking */
+    // autolinkLibrariesWithApp()
+    
+    nodeExecutableAndArgs = ["/opt/homebrew/bin/node"]
     autolinkLibrariesWithApp()
 }
+
 
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
@@ -108,21 +112,6 @@ android {
 }
 
 
-
-// dependencies {
-//     implementation("com.facebook.react:react-android")
-
-//     implementation("com.google.android.gms:play-services-location:21.3.0")
-//     // implementation("com.google.android.gms:play-services-location:21.0.1")
-//     // Use the same version as the workinƒg project
-//     // implementation "com.google.android.gms:play-services-location:20.0.0"
-
-//     if (hermesEnabled.toBoolean()) {
-//         implementation("com.facebook.react:hermes-android")
-//     } else {
-//         implementation jscFlavor
-//     }
-// }
 
 
 dependencies {

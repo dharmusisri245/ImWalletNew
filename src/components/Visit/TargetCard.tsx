@@ -59,7 +59,6 @@ const TargetCard: React.FC<TargetCardProps> = ({
         />
 
       </View>
-
       <View style={styles.statsRow}>
 
         <View style={styles.statItem}>
@@ -121,14 +120,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
-    padding: 18,
+    padding: 15,
 
     shadowColor: '#000',
     shadowOpacity: 0.08,
-    shadowRadius: 10,
+    shadowRadius: 20,
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 3,
     },
 
     elevation: 5,
@@ -139,7 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    marginBottom: 18,
+    marginBottom: 10,
   },
 
   titleRow: {
@@ -157,13 +156,13 @@ const styles = StyleSheet.create({
   },
 
   percent: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '700',
     color: '#0936B0',
   },
 
   progressBackground: {
-    height: 10,
+    height: 8,
     borderRadius: 5,
     backgroundColor: '#E5E7EB',
     overflow: 'hidden',
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
   },
 
   statsRow: {
-    marginTop: 22,
+    marginTop: 20,
 
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -195,7 +194,7 @@ const styles = StyleSheet.create({
   },
 
   value: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
     color: '#111827',
   },

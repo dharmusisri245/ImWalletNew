@@ -1,16 +1,94 @@
+// import React from 'react';
+// import RootNavigator from './src/rootNavigator/RootNavigator';
+// import Toast from 'react-native-toast-message';
+// export default function App() {
+//   return (
+//     <>
+//     {/* <RootNavigator/> */}
+//     {/* <Toast/> */}
+//     </>
+//   );
+// }
+
+
+
 import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+
 import RootNavigator from './src/rootNavigator/RootNavigator';
 import Toast from 'react-native-toast-message';
-import VisitDashboardScreen from './src/Screen/Visit/VisitDashboardScreen';
+
 export default function App() {
   return (
-    <>
-    {/* <RootNavigator/> */}
-    {/* <Toast/> */}
-    <VisitDashboardScreen/>
-    </>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <RootNavigator />
+        <Toast />
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
+
+
+
+
+
+
+// import React from 'react';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import { GestureHandlerRootView } from 'react-native-gesture-handler';
+// import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+
+// import ShopVisitScreen from './src/Screen/Visit/ShopVisitScreen';
+// import VisitDashboardScreen from './src/Screen/Visit/VisitDashboardScreen';
+// import LeadDetailsScreen from './src/Screen/Visit/LeadDetailsScreen';
+// import FollowUpScreen from './src/Screen/Visit/FollowUpScreen';
+// import VisitHistoryScreen from './src/Screen/Visit/VisitHistoryScreen';
+
+// const Stack = createNativeStackNavigator();
+
+// export default function App() {
+//   return (
+//     <GestureHandlerRootView style={{ flex: 1 }}>
+//       <BottomSheetModalProvider>
+//         <NavigationContainer>
+//           <Stack.Navigator screenOptions={{ headerShown: false }}>
+//             {/* <Stack.Screen
+//               name="VisitDashboard"
+//               component={VisitDashboardScreen}
+//             /> */}
+
+//             {/* <Stack.Screen
+//               name="VisitHistory"
+//               component={ShopVisitScreen}
+//             /> */}
+
+//             {/* <Stack.Screen
+//               name="LeadDetailsScreen"
+//               component={LeadDetailsScreen}
+//             /> */}
+
+//             {/* <Stack.Screen
+//               name="FollowUpScreen"
+//               component={FollowUpScreen}
+//             /> */}
+//             <Stack.Screen
+//             name='VisitHistoryScreen'
+//             component={VisitHistoryScreen}
+//             />
+//           </Stack.Navigator>
+//         </NavigationContainer>
+//       </BottomSheetModalProvider>
+//     </GestureHandlerRootView>
+//   );
+// }
+
+
+
+
+// using geature 
 
 
 

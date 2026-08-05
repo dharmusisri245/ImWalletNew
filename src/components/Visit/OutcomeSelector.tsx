@@ -1,14 +1,17 @@
 import React, {
   forwardRef,
-  useMemo,
+  ForwardedRef,
   useCallback,
+  useMemo,
+  useRef,
+  useImperativeHandle,
 } from 'react';
 
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
 
 import BottomSheet, {
@@ -25,239 +28,337 @@ export type VisitOutcome =
   | 'Not Interested'
   | 'Shop Closed';
 
-interface OutcomeSelectorProps {
+export interface OutcomeSelectorProps {
   onSelect: (value: VisitOutcome) => void;
 }
 
 interface OutcomeItem {
   id: number;
   title: VisitOutcome;
-  subtitle: string;
-  icon: string;
+  description: string;
+  icon: React.ComponentProps<typeof Ionicons>['name'];
   color: string;
 }
 
-const outcomes: OutcomeItem[] = [
+const OUTCOMES: OutcomeItem[] = [
   {
     id: 1,
     title: 'Interested',
-    subtitle: 'Customer is ready to proceed.',
+    description: 'Customer is ready to continue.',
     icon: 'checkmark-circle',
     color: '#16A34A',
   },
   {
     id: 2,
     title: 'Follow-up Required',
-    subtitle: 'Customer requested another visit.',
+    description: 'Customer requested another meeting.',
     icon: 'calendar-outline',
     color: '#F59E0B',
   },
   {
     id: 3,
     title: 'Decision Pending',
-    subtitle: 'Customer needs more time.',
+    description: 'Customer needs time to decide.',
     icon: 'time-outline',
     color: '#2563EB',
   },
   {
     id: 4,
     title: 'Not Interested',
-    subtitle: 'Customer rejected the proposal.',
+    description: 'Customer rejected the proposal.',
     icon: 'close-circle',
     color: '#EF4444',
   },
   {
     id: 5,
     title: 'Shop Closed',
-    subtitle: 'Shop was closed during visit.',
+    description: 'Shop was closed during visit.',
     icon: 'lock-closed',
-    color: '#6B7280',
+    color: '#64748B',
   },
 ];
 
-const OutcomeSelector = forwardRef<BottomSheet, OutcomeSelectorProps>(
-  ({ onSelect }, ref) => {
+const OutcomeSelector = forwardRef(function OutcomeSelector(
+  { onSelect }: OutcomeSelectorProps,
+  ref: ForwardedRef<BottomSheet>,
+) {
 
-    const snapPoints = useMemo(
-      () => ['68%'],
-      [],
-    );
+  const sheetRef = useRef<BottomSheet>(null);
 
-    const renderBackdrop = useCallback(
-      (props: any) => (
-        <BottomSheetBackdrop
-          {...props}
-          appearsOnIndex={0}
-          disappearsOnIndex={-1}
-          opacity={0.45}
-        />
-      ),
-      [],
-    );
+  useImperativeHandle(
+    ref,
+    () => sheetRef.current as BottomSheet,
+  );
 
-    const OutcomeRow = ({
-      item,
-    }: {
-      item: OutcomeItem;
-    }) => (
-      <TouchableOpacity
-        activeOpacity={0.85}
-        style={styles.row}
-        onPress={() => {
+  const snapPoints = useMemo(
+    () => ['65%'],
+    [],
+  );
 
-          onSelect(item.title);
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        opacity={0.45}
+      />
+    ),
+    [],
+  );
 
-          if (
-            ref &&
-            typeof ref !== 'function' &&
-            ref.current
-          ) {
-            ref.current.close();
-          }
-        }>
+  const handleSelect = (item: OutcomeItem) => {
 
-        <View
-          style={[
-            styles.iconContainer,
-            {
-              backgroundColor: `${item.color}20`,
-            },
-          ]}>
+    onSelect(item.title);
 
-          <Ionicons
-            name={item.icon as any}
-            size={26}
-            color={item.color}
-          />
+    sheetRef.current?.close();
 
-        </View>
+  };
 
-        <View style={styles.content}>
+  const OutcomeRow = ({
+    item,
+  }: {
+    item: OutcomeItem;
+  }) => (
 
-          <Text style={styles.title}>
-            {item.title}
-          </Text>
+    <TouchableOpacity
+      activeOpacity={0.85}
+      style={styles.row}
+      onPress={() => handleSelect(item)}>
 
-          <Text style={styles.subtitle}>
-            {item.subtitle}
-          </Text>
-
-        </View>
+      <View
+        style={[
+          styles.iconContainer,
+          {
+            backgroundColor: `${item.color}20`,
+          },
+        ]}>
 
         <Ionicons
-          name="chevron-forward"
-          size={22}
-          color="#9CA3AF"
+          name={item.icon}
+          size={28}
+          color={item.color}
         />
 
-      </TouchableOpacity>
-    );
-        return (
-      <BottomSheet
-        ref={ref}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose
-        backdropComponent={renderBackdrop}
-        handleIndicatorStyle={styles.indicator}
-        backgroundStyle={styles.sheetBackground}>
+      </View>
 
-        <BottomSheetView style={styles.container}>
+      <View style={styles.content}>
 
-          <View style={styles.header}>
+        <Text style={styles.title}>
+          {item.title}
+        </Text>
 
-            <Ionicons
-              name="clipboard-outline"
-              size={26}
-              color="#0936B0"
-            />
+        <Text style={styles.description}>
+          {item.description}
+        </Text>
 
-            <Text style={styles.headerTitle}>
-              Select Visit Outcome
-            </Text>
+      </View>
 
-          </View>
+      <Ionicons
+        name="chevron-forward"
+        size={22}
+        color="#94A3B8"
+      />
 
-          <Text style={styles.headerSubtitle}>
-            Choose the final outcome of this shop visit.
-          </Text>
+    </TouchableOpacity>
 
-          {outcomes.map(item => (
-            <OutcomeRow
-              key={item.id}
-              item={item}
-            />
-          ))}
+  );
 
-        </BottomSheetView>
+  return (
+    <BottomSheet
+      ref={sheetRef}
+      index={-1}
+      snapPoints={snapPoints}
+      enablePanDownToClose
+      backdropComponent={renderBackdrop}
+      handleIndicatorStyle={styles.indicator}
+      backgroundStyle={styles.background}>
 
-      </BottomSheet>
-    );
-  },
-);
+      <BottomSheetView style={styles.container}>
+
+      <View style={styles.header}>
+  <View style={styles.headerLeft}>
+    <View style={styles.headerIcon}>
+      <Ionicons
+        name="clipboard-outline"
+        size={22}
+        color="#0936B0"
+      />
+    </View>
+
+    <View>
+      <Text style={styles.headerTitle}>
+        Visit Outcome
+      </Text>
+
+      <Text style={styles.headerSubtitle}>
+        Select the result of this visit
+      </Text>
+    </View>
+  </View>
+
+  <TouchableOpacity
+    style={styles.closeButton}
+    onPress={() => sheetRef.current?.close()}>
+    <Ionicons
+      name="close"
+      size={22}
+      color="#64748B"
+    />
+  </TouchableOpacity>
+</View>
+
+        {OUTCOMES.map(item => (
+          <OutcomeRow
+            key={item.id}
+            item={item}
+          />
+        ))}
+
+      </BottomSheetView>
+
+    </BottomSheet>
+  );
+
+});
 
 export default React.memo(OutcomeSelector);
 
 const styles = StyleSheet.create({
 
-  sheetBackground: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+  background: {
+
     backgroundColor: '#FFFFFF',
+
+    borderTopLeftRadius: 28,
+
+    borderTopRightRadius: 28,
   },
 
   indicator: {
+
     width: 70,
+
     height: 5,
+
     backgroundColor: '#CBD5E1',
   },
 
   container: {
+
     flex: 1,
+
     paddingHorizontal: 20,
+
     paddingBottom: 35,
   },
 
   header: {
+    justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
+    marginBottom: 24,
+
+  },
+
+  headerContent: {
+    flex: 1,
+    marginLeft: 10,
+
   },
 
   headerTitle: {
-    marginLeft: 10,
+
     fontSize: 22,
+
     fontWeight: '700',
+
     color: '#111827',
   },
 
   headerSubtitle: {
-    marginTop: 8,
-    marginBottom: 22,
-    color: '#6B7280',
-    fontSize: 15,
-    lineHeight: 22,
+
+    marginTop: 4,
+
+    fontSize: 14,
+
+    color: '#64748B',
+
+    lineHeight: 20,
+  },
+  CrossButton:{
+   flexDirection:'row-reverse',
   },
 
+  header: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginVertical: 16,
+},
+
+headerLeft: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  flex: 1,
+},
+
+headerIcon: {
+  width: 44,
+  height: 44,
+  borderRadius: 22,
+  backgroundColor: '#EEF4FF',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginRight: 12,
+},
+
+headerTitle: {
+  fontSize: 18,
+  fontWeight: '700',
+  color: '#111827',
+},
+
+headerSubtitle: {
+  marginTop: 2,
+  fontSize: 13,
+  color: '#64748B',
+},
+
+closeButton: {
+  width: 38,
+  height: 38,
+  borderRadius: 19,
+  backgroundColor: '#F3F4F6',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
   row: {
+
     flexDirection: 'row',
+
     alignItems: 'center',
 
     backgroundColor: '#FFFFFF',
 
     borderRadius: 18,
 
-    paddingHorizontal: 16,
-    paddingVertical: 18,
+    padding: 16,
 
     marginBottom: 14,
 
     borderWidth: 1,
+
     borderColor: '#E5E7EB',
 
     shadowColor: '#000',
+
     shadowOpacity: 0.05,
-    shadowRadius: 5,
+
+    shadowRadius: 6,
+
     shadowOffset: {
       width: 0,
       height: 2,
@@ -267,30 +368,43 @@ const styles = StyleSheet.create({
   },
 
   iconContainer: {
+
     width: 56,
+
     height: 56,
+
     borderRadius: 28,
 
     justifyContent: 'center',
+
     alignItems: 'center',
   },
 
   content: {
+
     flex: 1,
-    marginHorizontal: 15,
+
+    marginHorizontal: 14,
   },
 
   title: {
+
     fontSize: 16,
+
     fontWeight: '700',
+
     color: '#111827',
   },
 
-  subtitle: {
+  description: {
+
     marginTop: 4,
+
     fontSize: 13,
-    lineHeight: 19,
-    color: '#6B7280',
+
+    color: '#64748B',
+
+    lineHeight: 18,
   },
 
 });

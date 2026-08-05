@@ -88,11 +88,12 @@ import WalletScreen from '../auth/screnn/WalletScreen';
 import ProfileScreen from '../auth/screnn/ProfileScreen';
 import HomeStack from '../Stacks/HomeStack';
 import ProfileStack from '../Stacks/ProfileStack';
+import VisitStack from '../Stacks/VisitStack';
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTab() {
-    useEffect(() => {
+  useEffect(() => {
     console.log("✅ BottomTab Mounted");
   }, []);
 
@@ -139,8 +140,16 @@ export default function BottomTab() {
               iconName = focused ? 'bar-chart' : 'bar-chart-outline';
               break;
 
-            case 'Wallet':
-              iconName = focused ? 'wallet' : 'wallet-outline';
+            // case 'Wallet':
+            //   iconName = focused ? 'wallet' : 'wallet-outline';
+            //   break;
+
+            // case 'Visit':
+            //   iconName = focused ? 'storefront' : 'storefront-outline';
+            //   break;
+
+            case 'Visit':
+              iconName = focused ? 'business' : 'business-outline';
               break;
 
             case 'Profile':
@@ -163,7 +172,9 @@ export default function BottomTab() {
       <Tab.Screen name='Home' component={HomeStack} />
       <Tab.Screen name="Services" component={ServicesScreen} />
       <Tab.Screen name="Reports" component={ReportsScreen} />
-      <Tab.Screen name="Wallet" component={WalletScreen} />
+      {/* <Tab.Screen name="Wallet" component={WalletScreen} /> */}
+      <Tab.Screen name="Visit" component={VisitStack} />
+
       {/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
       <Tab.Screen name="Profile" component={ProfileStack} />
 
