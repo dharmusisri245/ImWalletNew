@@ -19,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomSheet from '@gorhom/bottom-sheet';
 
 import Ionicons from '@react-native-vector-icons/ionicons';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
     launchCamera,
     Asset,
@@ -27,11 +27,9 @@ import {
 
 import dayjs from 'dayjs';
 
-
 import ShopInfoCard from '../../components/Visit/ShopInfoCard';
 
 import VisitTimer from '../../components/Visit/VisitTimer';
-
 import OutcomeSelector, {
     VisitOutcome,
 } from '../../components/Visit/OutcomeSelector';
@@ -46,8 +44,13 @@ const ShopVisitScreen = ({ navigation }: any) => {
     const [mobile, setMobile] = useState('');
     const [category, setCategory] = useState('');
 
+    // DATE PICKER SYSTEM WE HAVE TO APPLY HERE ===================
+    const [date, setDate] = useState(new Date())
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showTimePicker, setShowTimePicker] = useState(false);
 
     // Address can still come from GPS
+
     const [address, setAddress] = useState('');
 
     const outcomeSheetRef =
@@ -90,24 +93,14 @@ const ShopVisitScreen = ({ navigation }: any) => {
         useState({
 
             id: '1',
-
             shopName: 'ABC Electronics',
-
             ownerName: 'Rajesh Kumar',
-
             mobile: '+91 9876543210',
-
             address: 'Sector 62 Noida',
-
             category: 'Electronics',
-
         });
-
-
     useEffect(() => {
-
         loadCurrentLocation();
-
     }, []);
 
     const loadCurrentLocation =
@@ -241,16 +234,14 @@ const ShopVisitScreen = ({ navigation }: any) => {
 
     };
 
-
-
     const closeFollowUp = () => {
         setSelectedOutcome(undefined);
         setFollowUpDate('');
         setFollowUpTime('');
         setFollowUpReason('');
     };
+    
     return (
-
         <SafeAreaView
             style={styles.container}
             edges={['top']}>
@@ -259,7 +250,6 @@ const ShopVisitScreen = ({ navigation }: any) => {
                 title="Shop Visit"
                 subtitle="Lead Generation"
             />
-
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.content}>
@@ -529,21 +519,71 @@ const ShopVisitScreen = ({ navigation }: any) => {
                                 </TouchableOpacity>
                             </View>
 
-                            <TextInput
-                                value={followUpDate}
-                                onChangeText={setFollowUpDate}
-                                placeholder="Follow-up Date"
-                                placeholderTextColor="#94A3B8"
+                            <TouchableOpacity
                                 style={styles.input}
-                            />
+                                onPress={() => setShowDatePicker(true)}>
 
-                            <TextInput
-                                value={followUpTime}
-                                onChangeText={setFollowUpTime}
-                                placeholder="Follow-up Time"
-                                placeholderTextColor="#94A3B8"
+                                <Text
+                                    style={{
+                                        color: followUpDate ? '#111827' : '#94A3B8',
+                                        fontSize: 15,
+                                    }}>
+                                    {followUpDate || 'Select Follow-up Date'}
+                                </Text>
+
+                            </TouchableOpacity>
+                            {showDatePicker && (
+                                <DateTimePicker
+                                    value={date}
+                                    mode="date"
+                                    display="default"
+                                    minimumDate={new Date()}
+                                    onChange={(event, selectedDate) => {
+                                        setShowDatePicker(false);
+
+                                        if (selectedDate) {
+                                            setDate(selectedDate);
+
+                                            setFollowUpDate(
+                                                selectedDate.toLocaleDateString(),
+                                            );
+                                        }
+                                    }}
+                                />
+                            )}
+
+                            <TouchableOpacity
                                 style={styles.input}
-                            />
+                                onPress={() => setShowTimePicker(true)}>
+
+                                <Text
+                                    style={{
+                                        color: followUpTime ? '#111827' : '#94A3B8',
+                                        fontSize: 15,
+                                    }}>
+                                    {followUpTime || 'Select Follow-up Time'}
+                                </Text>
+
+                            </TouchableOpacity>
+                            {showTimePicker && (
+                                <DateTimePicker
+                                    value={date}
+                                    mode="time"
+                                    display="default"
+                                    onChange={(event, selectedTime) => {
+                                        setShowTimePicker(false);
+
+                                        if (selectedTime) {
+                                            setFollowUpTime(
+                                                selectedTime.toLocaleTimeString([], {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                }),
+                                            );
+                                        }
+                                    }}
+                                />
+                            )}
 
                             <TextInput
                                 value={followUpReason}

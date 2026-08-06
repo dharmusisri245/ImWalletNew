@@ -1066,14 +1066,15 @@ interface CameraCaptureScreenProps {
   employeeName: string;
   employeeId: string;
   employeeType: EmployeeType;
-  office?: OfficeConfig;
+  office: string,
+  distanceFromOfficeMeters?: number;
 
   currentLocation?: {
     latitude: number;
     longitude: number;
   } | null;
 
-  currentAddress?: string,
+  currentAddress?: string;
   onClose: () => void;
   onCaptured: (result: CaptureResult) => void | Promise<void>;
 }
@@ -1154,6 +1155,7 @@ const CameraCaptureScreen = ({
   employeeId,
   employeeType,
   office,
+  distanceFromOfficeMeters,
   currentLocation,
   currentAddress,
   onClose,
@@ -1212,26 +1214,26 @@ const CameraCaptureScreen = ({
   }, [device, cameraPosition]);
 
 
- useEffect(() => {
-  if (!visible) return;
+  useEffect(() => {
+    if (!visible) return;
 
-  setCapturedPhoto(null);
-  setShowSuccess(false);
+    setCapturedPhoto(null);
+    setShowSuccess(false);
 
-  if (currentLocation) {
-    setCoords({
-      lat: currentLocation.latitude,
-      lng: currentLocation.longitude,
-    });
-  }
+    if (currentLocation) {
+      setCoords({
+        lat: currentLocation.latitude,
+        lng: currentLocation.longitude,
+      });
+    }
 
-  setAddress(currentAddress ?? "");
+    setAddress(currentAddress ?? "");
 
-  setGpsLoading(false);
-  setGpsError(null);
-}, [visible, currentLocation, currentAddress]);
+    setGpsLoading(false);
+    setGpsError(null);
+  }, [visible, currentLocation, currentAddress]);
 
- 
+
 
   /* ---------------- Derived geofencing ---------------- */
   const distanceMeters = useMemo(() => {
@@ -1334,8 +1336,8 @@ const CameraCaptureScreen = ({
         latitude: coords.lat,
         longitude: coords.lng,
         address,
-        distanceFromOfficeMeters: distanceMeters,
-        insideOfficeRadius: insideRadius,
+        distanceFromOfficeMeters: distanceFromOfficeMeters,
+        // insideOfficeRadius: insideRadius,
         employeeId,
         employeeName,
       };
@@ -1512,7 +1514,7 @@ const CameraCaptureScreen = ({
           <Text style={styles.employeeSub}>
             {employeeType === 'office' ? 'Office Employee' : 'Field Employee'}
           </Text>
-              {/* <Text style={styles.locationLine2} numberOfLines={2}>
+          {/* <Text style={styles.locationLine2} numberOfLines={2}>
                 {address || currentAddress || "Fetching location..."}
               </Text> */}
           <View style={styles.divider} />
@@ -1531,16 +1533,15 @@ const CameraCaptureScreen = ({
             </View>
           ) : (
             <>
-              {distanceMeters !== undefined && office && (
+              {distanceFromOfficeMeters !== undefined && (
                 <View style={styles.locationRow}>
                   <MaterialDesignIcons
                     name={insideRadius ? 'map-marker-check' : 'map-marker-alert'}
                     size={14}
                     color={insideRadius ? GREEN : '#F59E0B'}
                   />
-                  <Text style={styles.locationLine1} numberOfLines={1}>
-                    <Text style={styles.locationBold}>{formatKm(distanceMeters)}</Text> from{' '}
-                    {office.name}
+                  <Text style={styles.locationLine1}>
+                    {formatKm(distanceFromOfficeMeters)} from Office
                   </Text>
                 </View>
               )}

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 
-import {reverseGeocode$ } from '../../services/GeocodingService';
+import { reverseGeocode$ } from '../../services/GeocodingService';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import PermissionService from '../../services/PermissionService';
 import CameraCaptureScreen, {
@@ -23,8 +23,12 @@ import LocationService from '../../services/LocationService';
 import AttendanceStorage from '../../services/AttendanceStorage';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import CompanyHeader from '../../components/CompanyHeader';
 import Toast from 'react-native-toast-message';
+import { MOCK_EMPLOYEE } from '../../components/config/mockEmployeeConfig';
+import CompanyHeader from '../../components/CompanyHeader';
+import DistanceService from '../../services/DistanceService';
+
+const office = MOCK_EMPLOYEE.office;
 
 const TODAY_LABEL = new Date().toLocaleDateString('en-GB', {
   day: '2-digit',
@@ -35,18 +39,18 @@ const TODAY_LABEL = new Date().toLocaleDateString('en-GB', {
 const MAROON = '#082db3';
 
 
-const CURRENT_EMPLOYEE = {
-  name: 'Dharmendra Gupta',
-  id: 'EMP-4521',
-  type: 'field' as EmployeeType, // 'office' | 'field'
-};
+// const CURRENT_EMPLOYEE = {
+//   name: 'Dharmendra Gupta',
+//   id: 'EMP-4521',
+//   type: 'field' as EmployeeType, // 'office' | 'field'
+// };
 
-const ASSIGNED_OFFICE = {
-  name: 'Corporate HQ - Sector 63',
-  latitude: 28.6139,
-  longitude: 77.209,
-  radiusMeters: 300,
-};
+// const ASSIGNED_OFFICE = {
+//   name: 'Corporate HQ - Sector 63',
+//   latitude: 28.6139,
+//   longitude: 77.209,
+//   radiusMeters: 300,
+// };
 
 const AttendanceScreen = () => {
   const [activeMode, setActiveMode] = useState<AttendanceMode>('check-in');
@@ -56,27 +60,27 @@ const AttendanceScreen = () => {
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigation();
   const [currentLocation, setCurrentLocation] = useState<{
-  latitude: number;
-  longitude: number;
-} | null>(null);
+    latitude: number;
+    longitude: number;
+  } | null>(null);
   const [currentAddress, setCurrentAddress] = useState("");
-
-  const [summary ,setSummary] = useState({
+  const [distanceFromOffice, setDistanceFromOffice] = useState<number>(0);
+  const [summary, setSummary] = useState({
     checkInTime: '',
     checkOutTime: '',
     workingHours: '00h 00m',
   })
 
 
-  const loadAttendance = async() =>{
+  const loadAttendance = async () => {
     const data = await AttendanceStorage.getTodayAttendanceSummary();
     setSummary(data)
   }
 
 
-  useEffect(()=>{
+  useEffect(() => {
     loadAttendance()
-  },[])
+  }, [])
 
 
 
@@ -94,7 +98,7 @@ const AttendanceScreen = () => {
   // );
 
 
-const loadAttendanceStatus = async () => {
+  const loadAttendanceStatus = async () => {
     const lastAttendance =
       await AttendanceStorage.getLastAttendance();
 
@@ -126,113 +130,66 @@ const loadAttendanceStatus = async () => {
     }, []),
   );
 
-  // const openCaptureFlow = async () => {
-  //   try {
-  //     setLoadingLocation(true);
+  const openCaptureFlow = async () => {
+    try {
+      setLoadingLocation(true);
 
-  //     const hasCamera =
-  //       await PermissionService.hasCameraPermission();
+      const hasCamera = await PermissionService.hasCameraPermission();
+      const hasLocation = await PermissionService.hasLocationPermission();
 
-  //     const hasLocation =
-  //       await PermissionService.hasLocationPermission();
-  //     console.log("Camera Permission:", await PermissionService.hasCameraPermission());
-  //     console.log("Location Permission:", await PermissionService.hasLocationPermission());
+      if (!hasCamera || !hasLocation) {
+        setLoadingLocation(false);
+        return;
+      }
 
-  //     if (!hasCamera || !hasLocation) {
-  //       setLoadingLocation(false);
-  //       return;
-  //     }
+      const gpsEnabled = await LocationService.ensureGpsEnabled();
 
+      if (!gpsEnabled) {
+        setLoadingLocation(false);
+        return;
+      }
 
-  //     const location = await LocationService.getCurrentLocation();
+      // 1. Get Current Location
+      const location = await LocationService.getCurrentLocation();
 
-  //     console.log("Current Location:", location);
+      // 2. Calculate Distance
+      const distance = DistanceService.calculateDistance(
+        location.latitude,
+        location.longitude,
+        office.latitude,
+        office.longitude,
+      );
 
-  //     // Convert Lat/Lng to Address
-  //     const address = await reverseGeocode$({
-  //       latitude: location.latitude,
-  //       longitude: location.longitude,
-  //     });
-  //     setCurrentLocation(location);
-  //     setCurrentAddress(address.displayName);
+      // 3. Get Address
+      const address = await reverseGeocode$({
+        latitude: location.latitude,
+        longitude: location.longitude,
+      });
 
+      // 4. Save Data
+      setCurrentLocation(location);
+      setCurrentAddress(address.displayName);
+      setDistanceFromOffice(distance);
 
-  //     console.log("Address:", address);
-  //     // console.log(JSON.stringify(address.results[0], null, 2));
+      // Optional
+      console.log("Distance:", distance);
 
-  //     // TODO: Store location & address in state if CameraCaptureScreen needs them
-
-  //     setLoadingLocation(false);
-
-  //     // NOW open camera
-  //     setCameraVisible(true);
-
-  //   } catch (e: any) {
-  //     setLoadingLocation(false);
-
-  //     console.log("Location Error:", e);
-  //     console.log("Location Error Message:", e?.message);
-
-  //     Alert.alert(
-  //       "Location Error",
-  //       e?.message || "Unable to fetch current location."
-  //     );
-  //   }
-  // };
-
-
-const openCaptureFlow = async () => {
-  try {
-    setLoadingLocation(true);
-
-    const hasCamera =
-      await PermissionService.hasCameraPermission();
-
-    const hasLocation =
-      await PermissionService.hasLocationPermission();
-
-    if (!hasCamera || !hasLocation) {
+      // 5. Open Camera
       setLoadingLocation(false);
-      return;
-    }
+      setCameraVisible(true);
 
-    // here we aree checking when by chance gps is disable then here open setting for manually open  gps settiong  Ensure GPS is enabled
-    const gpsEnabled =
-      await LocationService.ensureGpsEnabled();
-
-    if (!gpsEnabled) {
+    } catch (e: any) {
       setLoadingLocation(false);
-      return;
+
+      Alert.alert(
+        "Location Error",
+        e?.message || "Unable to fetch current location."
+      );
     }
-
-    const location =
-      await LocationService.getCurrentLocation();
-
-    const address = await reverseGeocode$({
-      latitude: location.latitude,
-      longitude: location.longitude,
-    });
-
-    setCurrentLocation(location);
-    setCurrentAddress(address.displayName);
-
-    setLoadingLocation(false);
-    setCameraVisible(true);
-
-  } catch (e: any) {
-
-    setLoadingLocation(false);
-
-    Alert.alert(
-      "Location Error",
-      e?.message || "Unable to fetch current location."
-    );
-  }
-};
+  };
 
   const handleCaptured = async (result: CaptureResult) => {
     setSubmitting(true);
-
     try {
       const attendance = {
         id: Date.now().toString(),
@@ -296,6 +253,7 @@ const openCaptureFlow = async () => {
     }
   };
 
+  
 
   return (
     <View style={styles.screen}>
@@ -305,7 +263,6 @@ const openCaptureFlow = async () => {
         <View style={styles.dateBanner}>
           <Text style={styles.dateBannerText}>Today's Attendance: {TODAY_LABEL}</Text>
         </View>
-
         <View style={styles.toggleRow}>
           <TouchableOpacity
             style={[
@@ -313,10 +270,8 @@ const openCaptureFlow = async () => {
               activeMode === 'check-in' && styles.toggleCardActive,
               checkedIn && styles.toggleCardDisabled,
             ]}
-            // onPress={() => !checkedIn && setActiveMode('check-in')}
             onPress={async () => {
               if (checkedIn) return;
-
               setActiveMode('check-in');
               await openCaptureFlow();
             }}
@@ -327,7 +282,6 @@ const openCaptureFlow = async () => {
             </View>
             <Text style={styles.toggleLabel}>Check-In</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[
               styles.toggleCard,
@@ -351,9 +305,6 @@ const openCaptureFlow = async () => {
             </Text>
           </TouchableOpacity>
         </View>
-
-
-
         <TouchableOpacity style={styles.leaveButton}>
           <Text style={styles.leaveButtonText}>Leave</Text>
         </TouchableOpacity>
@@ -378,9 +329,7 @@ const openCaptureFlow = async () => {
             <Text style={styles.loadingSub}>
               Please wait
             </Text>
-
           </View>
-
         </View>
       )}
       <Modal
@@ -393,11 +342,18 @@ const openCaptureFlow = async () => {
         <CameraCaptureScreen
           visible={cameraVisible}
           mode={activeMode}
-          employeeName={CURRENT_EMPLOYEE.name}
-          employeeId={CURRENT_EMPLOYEE.id}
-          employeeType={CURRENT_EMPLOYEE.type}
+          // employeeName={CURRENT_EMPLOYEE.name}
+          // employeeId={CURRENT_EMPLOYEE.id}
+          // employeeType={CURRENT_EMPLOYEE.type}
+          // distanceFromOfficeMeters={distance}
+          // distanceFromOffice={distanceFromOffice}
+          distanceFromOfficeMeters={distanceFromOffice}
+          mode={activeMode}
+          employeeName={office.name}
+          employeeId={office.id}
+          employeeType={office.type}
           office={
-            CURRENT_EMPLOYEE.type === 'office'
+            office.type === 'office'
               ? ASSIGNED_OFFICE
               : undefined
           }
