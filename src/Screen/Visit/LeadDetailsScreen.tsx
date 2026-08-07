@@ -200,6 +200,8 @@ const LeadDetailsScreen = ({
       'Lead Saved Successfully.',
     );
 
+    navigation.navigate('VisitDashboard')
+
   };
 
   return (

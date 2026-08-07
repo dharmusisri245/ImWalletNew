@@ -936,6 +936,7 @@ const navigation =
                             <Text style={styles.supportText}>Contact ImWallet Support</Text>
                         </TouchableOpacity>
                     </View>
+                    
                 </Animated.View>
 
                 <Text style={styles.footerText}>
@@ -980,6 +981,8 @@ const styles = StyleSheet.create({
         shadowRadius: 24,
         shadowOffset: { width: 0, height: 10 },
         elevation: 10,
+        marginBottom: Platform.OS === 'ios' ? 20 : 0,
+
     },
     cardTint: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255,255,255,0.55)' },
     cardContent: { paddingHorizontal: 22, paddingTop: 24, paddingBottom: 22 },
@@ -1078,8 +1081,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: COLORS.textMuted,
         fontSize: 10,
-        marginTop: 18,
-        paddingHorizontal: 40,
+        marginTop: Platform.OS ==='ios' ?-5:10,
+        paddingHorizontal:Platform.OS==='ios'? 70:40,
+        // marginBottom:Platform.OS ==='ios'?30:0,
+        paddingBottom:Platform.OS==='ios'?50:0
     },
 });
 

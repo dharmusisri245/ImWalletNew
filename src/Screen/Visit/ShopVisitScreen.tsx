@@ -12,6 +12,7 @@ import {
     TouchableOpacity,
     TextInput,
     Alert,
+    Platform,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -220,7 +221,7 @@ const ShopVisitScreen = ({ navigation }: any) => {
 
         }
 
-        navigation.navigate('LeadDetailsScreen', {
+        navigation.navigate('LeadDetails', {
             shop: {
                 shopName,
                 ownerName,
@@ -240,7 +241,7 @@ const ShopVisitScreen = ({ navigation }: any) => {
         setFollowUpTime('');
         setFollowUpReason('');
     };
-    
+
     return (
         <SafeAreaView
             style={styles.container}
@@ -491,7 +492,6 @@ const ShopVisitScreen = ({ navigation }: any) => {
                 </View>
 
                 {
-
                     selectedOutcome ===
                     'Follow-up Required' && (
 
@@ -504,7 +504,6 @@ const ShopVisitScreen = ({ navigation }: any) => {
                                     size={22}
                                     color="#0936B0"
                                 />
-
                                 <Text style={styles.cardTitle}>
                                     Follow-up Details
                                 </Text>
@@ -525,32 +524,35 @@ const ShopVisitScreen = ({ navigation }: any) => {
 
                                 <Text
                                     style={{
-                                        color: followUpDate ? '#111827' : '#94A3B8',
+                                        color: followUpDate ? '#111827' : '#94A3B8', alignContent: 'center', marginTop: 15,
                                         fontSize: 15,
                                     }}>
                                     {followUpDate || 'Select Follow-up Date'}
                                 </Text>
 
                             </TouchableOpacity>
-                            {showDatePicker && (
-                                <DateTimePicker
-                                    value={date}
-                                    mode="date"
-                                    display="default"
-                                    minimumDate={new Date()}
-                                    onChange={(event, selectedDate) => {
-                                        setShowDatePicker(false);
+                            <View style={styles.preview1}>
+                                {showDatePicker && (
+                                    <DateTimePicker
+                                        value={date}
+                                        mode="date"
+                                        display="default"
+                                        minimumDate={new Date()}
+                                        onChange={(event, selectedDate) => {
+                                            setShowDatePicker(false);
 
-                                        if (selectedDate) {
-                                            setDate(selectedDate);
+                                            if (selectedDate) {
+                                                setDate(selectedDate);
 
-                                            setFollowUpDate(
-                                                selectedDate.toLocaleDateString(),
-                                            );
-                                        }
-                                    }}
-                                />
-                            )}
+                                                setFollowUpDate(
+                                                    selectedDate.toLocaleDateString(),
+                                                );
+                                            }
+                                        }}
+                                    />
+                                )}
+
+                            </View>
 
                             <TouchableOpacity
                                 style={styles.input}
@@ -558,32 +560,35 @@ const ShopVisitScreen = ({ navigation }: any) => {
 
                                 <Text
                                     style={{
-                                        color: followUpTime ? '#111827' : '#94A3B8',
+                                        color: followUpTime ? '#111827' : '#94A3B8', marginTop: 15,
                                         fontSize: 15,
                                     }}>
                                     {followUpTime || 'Select Follow-up Time'}
                                 </Text>
 
                             </TouchableOpacity>
-                            {showTimePicker && (
-                                <DateTimePicker
-                                    value={date}
-                                    mode="time"
-                                    display="default"
-                                    onChange={(event, selectedTime) => {
-                                        setShowTimePicker(false);
+                            <View style={styles.preview2}>
+                                {showTimePicker && (
+                                    <DateTimePicker
+                                        value={date}
+                                        mode="time"
+                                        display="default"
+                                        onChange={(event, selectedTime) => {
+                                            setShowTimePicker(false);
 
-                                        if (selectedTime) {
-                                            setFollowUpTime(
-                                                selectedTime.toLocaleTimeString([], {
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                }),
-                                            );
-                                        }
-                                    }}
-                                />
-                            )}
+                                            if (selectedTime) {
+                                                setFollowUpTime(
+                                                    selectedTime.toLocaleTimeString([], {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                    }),
+                                                );
+                                            }
+                                        }}
+                                    />
+                                )}
+                            </View>
+
 
                             <TextInput
                                 value={followUpReason}
@@ -672,22 +677,16 @@ const styles = StyleSheet.create({
     },
 
     cardHeader: {
-
         flexDirection: 'row',
-
         alignItems: 'center',
-
         marginBottom: 18,
     },
 
     cardTitle: {
-
         marginLeft: 10,
-
+        flex: 1,
         fontSize: 18,
-
         fontWeight: '700',
-
         color: '#111827',
     },
 
@@ -843,12 +842,18 @@ const styles = StyleSheet.create({
 
         alignItems: 'center',
     },
-    closeButton: {
-        height: 50,
-        justifyContent: 'space-around',
-        paddingLeft: 120
-    },
+    // closeButton: {
+    //     height: 60,
+    //     justifyContent: 'space-around',
+    //     paddingLeft: Platform.OS === 'ios' ? 120 : 90
+    // },
 
+    closeButton: {
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     outcomeText: {
 
         marginLeft: 10,
@@ -900,5 +905,11 @@ const styles = StyleSheet.create({
 
         fontWeight: '700',
     },
+    preview1: {
+        marginBottom: 12
+    },
+    preview2: {
+        marginBottom: 12
+    }
 
 });
