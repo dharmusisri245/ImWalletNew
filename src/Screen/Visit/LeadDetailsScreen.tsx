@@ -231,7 +231,7 @@ const LeadDetailsScreen = ({
               color="#0936B0"
             />
 
-            <Text style={styles.cardTitle}>
+            <Text style={styles. cardTitle}>
               Shop Information
             </Text>
 

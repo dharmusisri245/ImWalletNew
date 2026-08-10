@@ -29,7 +29,7 @@ import {
 import dayjs from 'dayjs';
 
 import ShopInfoCard from '../../components/Visit/ShopInfoCard';
-
+import { Calendar } from 'react-native-calendars';
 import VisitTimer from '../../components/Visit/VisitTimer';
 import OutcomeSelector, {
     VisitOutcome,
@@ -37,6 +37,8 @@ import OutcomeSelector, {
 
 import LocationService from '../../services/LocationService';
 import AppHeader from '../../components/AppHeader';
+import { reverseGeocode$ } from '../../services/GeocodingService';
+import FollowUpTimePicker from '../../components/common/FollowUpTimePicker';
 
 const ShopVisitScreen = ({ navigation }: any) => {
 
@@ -44,6 +46,13 @@ const ShopVisitScreen = ({ navigation }: any) => {
     const [ownerName, setOwnerName] = useState('');
     const [mobile, setMobile] = useState('');
     const [category, setCategory] = useState('');
+
+
+
+    const [state, setState] = useState('');
+    const [district, setDistrict] = useState('');
+    const [block, setBlock] = useState('');
+    const [manualAddress, setManualAddress] = useState('');
 
     // DATE PICKER SYSTEM WE HAVE TO APPLY HERE ===================
     const [date, setDate] = useState(new Date())
@@ -53,53 +62,42 @@ const ShopVisitScreen = ({ navigation }: any) => {
     // Address can still come from GPS
 
     const [address, setAddress] = useState('');
+    const [loading, setLoading] = useState(false);
+    // const [currentLocation, setCurrentLocation] = useState<any>(null);
+    const [currentLocation, setCurrentLocation] = useState<{
+        latitude: number;
+        longitude: number;
+    } | null>(null);
+    const [accuracy, setAccuracy] = useState(0);
+    const [distance, setDistance] = useState(0);
+    const [loadingLocation, setLoadingLocation] = useState(false);
+    const outcomeSheetRef = useRef<BottomSheet>(null);
+    const visitStartTime = useRef(new Date());
 
-    const outcomeSheetRef =
-        useRef<BottomSheet>(null);
 
-    const visitStartTime =
-        useRef(new Date());
+    const [notes, setNotes] = useState('');
 
-    const [loading, setLoading] =
-        useState(false);
+    const [selectedOutcome, setSelectedOutcome] = useState<VisitOutcome>();
 
-    const [currentLocation, setCurrentLocation] =
-        useState<any>(null);
+    const [followUpDate, setFollowUpDate] = useState('');
 
-    const [accuracy, setAccuracy] =
-        useState(0);
+    const [followUpTime, setFollowUpTime] = useState('');
 
-    const [distance, setDistance] =
-        useState(0);
+    const [followUpReason, setFollowUpReason] = useState('');
 
-    const [notes, setNotes] =
-        useState('');
+    const [shopImages, setShopImages] = useState<Asset[]>([]);
 
-    const [selectedOutcome, setSelectedOutcome] =
-        useState<VisitOutcome>();
+    const [shop, setShop] = useState({
 
-    const [followUpDate, setFollowUpDate] =
-        useState('');
+        id: '1',
+        shopName: 'ABC Electronics',
+        ownerName: 'Rajesh Kumar',
+        mobile: '+91 9876543210',
+        address: 'Sector 62 Noida',
+        category: 'Electronics',
+    });
 
-    const [followUpTime, setFollowUpTime] =
-        useState('');
 
-    const [followUpReason, setFollowUpReason] =
-        useState('');
-
-    const [shopImages, setShopImages] =
-        useState<Asset[]>([]);
-
-    const [shop, setShop] =
-        useState({
-
-            id: '1',
-            shopName: 'ABC Electronics',
-            ownerName: 'Rajesh Kumar',
-            mobile: '+91 9876543210',
-            address: 'Sector 62 Noida',
-            category: 'Electronics',
-        });
     useEffect(() => {
         loadCurrentLocation();
     }, []);
@@ -112,19 +110,42 @@ const ShopVisitScreen = ({ navigation }: any) => {
                 const location =
                     await LocationService.getCurrentLocation();
 
-                setCurrentLocation(location);
+                console.log('complete location', location);
 
-                setAccuracy(
-                    location.accuracy ?? 0,
+                console.log(
+                    'latitude of location:',
+                    location.latitude,
                 );
 
-                // Later calculate from backend shop location
+                console.log(
+                    'longitude of location:',
+                    location.longitude,
+                );
+
+                setCurrentLocation(location);
+
+                setAccuracy(location.accuracy ?? 0);
+
                 setDistance(22);
+
+                const locationAddress = await reverseGeocode$({
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                });
+
+                setAddress(locationAddress.displayName);
 
             } catch (error) {
 
                 console.log(error);
 
+                Alert.alert(
+                    'Location Error',
+                    error?.message ||
+                    'Unable to fetch current location.',
+                );
+            } finally {
+                setLoadingLocation(false)
             }
 
         };
@@ -261,10 +282,16 @@ const ShopVisitScreen = ({ navigation }: any) => {
                     mobile={mobile}
                     category={category}
                     address={address}
+                    loadingLocation={loadingLocation}
                     onChangeShopName={setShopName}
                     onChangeOwnerName={setOwnerName}
                     onChangeMobile={setMobile}
                     onChangeCategory={setCategory}
+                    getCurrentLoacation={loadCurrentLocation}
+                    onChangeState={setState}
+                    onChangeDistrict={setDistrict}
+                    onChangeBlock={setBlock}
+                    onChangeManualAddress={setManualAddress}
                 />
 
                 <View style={styles.space} />
@@ -518,7 +545,10 @@ const ShopVisitScreen = ({ navigation }: any) => {
                                 </TouchableOpacity>
                             </View>
 
-                            <TouchableOpacity
+
+
+                            {/* date picckrere on google */}
+                            {/* <TouchableOpacity
                                 style={styles.input}
                                 onPress={() => setShowDatePicker(true)}>
 
@@ -552,9 +582,64 @@ const ShopVisitScreen = ({ navigation }: any) => {
                                     />
                                 )}
 
-                            </View>
+                            </View> */}
+
 
                             <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={styles.input}
+                                onPress={() => {
+                                    setShowTimePicker(false);
+                                    setShowDatePicker(true);
+                                }}
+                            >
+                                <View style={styles.dateInputContent}>
+                                    <Ionicons
+                                        name="calendar-outline"
+                                        size={20}
+                                        color="#2563EB"
+                                    />
+
+                                    <Text
+                                        style={[
+                                            styles.dateInputText,
+                                            !followUpDate && styles.placeholderText,
+                                        ]}
+                                    >
+                                        {followUpDate || 'Select Follow-up Date'}
+                                    </Text>
+
+                                    <Ionicons
+                                        name={showDatePicker ? 'chevron-up' : 'chevron-down'}
+                                        size={20}
+                                        color="#64748B"
+                                    />
+                                </View>
+                            </TouchableOpacity>
+
+                            {showDatePicker && (
+                                <View style={styles.inlineCalendar}>
+                                    <Calendar
+                                        minDate={new Date().toISOString().split('T')[0]}
+                                        onDayPress={day => {
+                                            const selectedDate = new Date(day.timestamp);
+
+                                            setDate(selectedDate);
+
+                                            setFollowUpDate(
+                                                selectedDate.toLocaleDateString(),
+                                            );
+
+                                            // Automatically close calendar
+                                            setShowDatePicker(false);
+                                        }}
+                                    />
+                                </View>
+                            )}
+
+                            {/* time picker */}
+
+                            {/* <TouchableOpacity
                                 style={styles.input}
                                 onPress={() => setShowTimePicker(true)}>
 
@@ -587,7 +672,134 @@ const ShopVisitScreen = ({ navigation }: any) => {
                                         }}
                                     />
                                 )}
-                            </View>
+                            </View> */}
+
+
+
+                            {/* <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={styles.input}
+                                onPress={() => {
+                                    setShowDatePicker(false);
+                                    setShowTimePicker(prev => !prev);
+                                }}
+                            >
+                                <View style={styles.dateInputContent}>
+
+                                    <Ionicons
+                                        name="time-outline"
+                                        size={21}
+                                        color="#2563EB"
+                                    />
+
+                                    <Text
+                                        style={[
+                                            styles.dateInputText,
+                                            !followUpTime && styles.placeholderText,
+                                        ]}
+                                    >
+                                        {followUpTime || 'Select Follow-up Time'}
+                                    </Text>
+
+                                    <Ionicons
+                                        name={
+                                            showTimePicker
+                                                ? 'chevron-up'
+                                                : 'chevron-down'
+                                        }
+                                        size={20}
+                                        color="#64748B"
+                                    />
+
+                                </View>
+                            </TouchableOpacity>
+
+                            {showTimePicker && (
+                                <View style={styles.inlineTimePicker}>
+
+                                    <View style={styles.timePickerHeader}>
+                                        <View style={styles.timeHeaderLeft}>
+                                            <Ionicons
+                                                name="time-outline"
+                                                size={22}
+                                                color="#2563EB"
+                                            />
+
+                                            <Text style={styles.timePickerTitle}>
+                                                Select Time
+                                            </Text>
+                                        </View>
+
+                                        <Text style={styles.selectedTimeText}>
+                                            {followUpTime || 'Select'}
+                                        </Text>
+                                    </View>
+
+                                    <View style={styles.timeOptions}>
+
+                                        {[
+                                            '09:00 AM',
+                                            '09:30 AM',
+                                            '10:00 AM',
+                                            '10:30 AM',
+                                            '11:00 AM',
+                                            '11:30 AM',
+                                            '12:00 PM',
+                                            '12:30 PM',
+                                            '01:00 PM',
+                                            '01:30 PM',
+                                            '02:00 PM',
+                                            '02:30 PM',
+                                            '03:00 PM',
+                                            '03:30 PM',
+                                            '04:00 PM',
+                                            '04:30 PM',
+                                            '05:00 PM',
+                                            '05:30 PM',
+                                            '06:00 PM',
+                                            '06:30 PM',
+                                            '07:00 PM',
+                                            '07:30 PM',
+                                            '08:00 PM',
+                                        ].map(time => (
+                                            <TouchableOpacity
+                                                key={time}
+                                                activeOpacity={0.75}
+                                                style={[
+                                                    styles.timeOption,
+                                                    followUpTime === time &&
+                                                    styles.selectedTimeOption,
+                                                ]}
+                                                onPress={() => {
+                                                    setFollowUpTime(time);
+                                                    setShowTimePicker(false);
+                                                }}
+                                            >
+                                                <Text
+                                                    style={[
+                                                        styles.timeOptionText,
+                                                        followUpTime === time &&
+                                                        styles.selectedTimeOptionText,
+                                                    ]}
+                                                >
+                                                    {time}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ))}
+
+                                    </View>
+
+                                </View>
+                            )} */}
+
+
+                            <FollowUpTimePicker
+                                value={followUpTime}
+                                onChange={setFollowUpTime}
+                                startHour={10}
+                                endHour={19}
+                                intervalMinutes={30}
+                            />
 
 
                             <TextInput
@@ -603,7 +815,6 @@ const ShopVisitScreen = ({ navigation }: any) => {
                         </View>
 
                     )
-
                 }
 
                 <TouchableOpacity
@@ -622,7 +833,6 @@ const ShopVisitScreen = ({ navigation }: any) => {
                     </Text>
 
                 </TouchableOpacity>
-
                 <View style={{ height: 80 }} />
 
             </ScrollView>
@@ -910,6 +1120,161 @@ const styles = StyleSheet.create({
     },
     preview2: {
         marginBottom: 12
-    }
+    },
+    inlineCalendar: {
+        marginTop: 10,
+        marginBottom: 14,
+
+        backgroundColor: '#FFFFFF',
+
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+
+        borderRadius: 18,
+
+        overflow: 'hidden',
+
+        elevation: 3,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+    },
+
+    dateInputContent: {
+        width: '100%',
+        height: '100%',
+
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    dateInputText: {
+        flex: 1,
+
+        marginLeft: 12,
+
+        fontSize: 16,
+        fontWeight: '500',
+
+        color: '#111827',
+
+        includeFontPadding: false,
+    },
+
+    placeholderText: {
+        color: '#94A3B8',
+    },
+    // time slector 
+    inlineTimePicker: {
+        marginTop: -4,
+        marginBottom: 14,
+
+        backgroundColor: '#FFFFFF',
+
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+
+        borderRadius: 18,
+
+        padding: 14,
+
+        elevation: 3,
+
+        shadowColor: '#000',
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+    },
+
+    timePickerHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+
+        paddingBottom: 14,
+
+        borderBottomWidth: 1,
+        borderBottomColor: '#EEF2F7',
+
+        marginBottom: 14,
+    },
+
+    timeHeaderLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    timePickerTitle: {
+        marginLeft: 9,
+
+        fontSize: 16,
+        fontWeight: '700',
+
+        color: '#111827',
+    },
+
+    selectedTimeText: {
+        fontSize: 14,
+        fontWeight: '700',
+
+        color: '#2563EB',
+
+        backgroundColor: '#EFF6FF',
+
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+
+        borderRadius: 10,
+    },
+
+    timeOptions: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+
+        gap: 10,
+    },
+
+    timeOption: {
+        width: '30%',
+
+        minHeight: 42,
+
+        borderRadius: 12,
+
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+
+        backgroundColor: '#F8FAFC',
+
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        paddingHorizontal: 5,
+    },
+
+    selectedTimeOption: {
+        backgroundColor: '#2563EB',
+        borderColor: '#2563EB',
+    },
+
+    timeOptionText: {
+        fontSize: 13,
+
+        fontWeight: '600',
+
+        color: '#475569',
+    },
+
+    selectedTimeOptionText: {
+        color: '#FFFFFF',
+    },
 
 });

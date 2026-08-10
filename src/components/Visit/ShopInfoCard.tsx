@@ -1,193 +1,12 @@
-// import React from 'react';
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-// } from 'react-native';
-
-// import Ionicons from '@react-native-vector-icons/ionicons';
-
-// interface ShopInfoCardProps {
-//   shopName: string;
-//   ownerName: string;
-//   mobile: string;
-//   address: string;
-//   category: string;
-// }
-
-// const ShopInfoCard: React.FC<ShopInfoCardProps> = ({
-//   shopName,
-//   ownerName,
-//   mobile,
-//   address,
-//   category,
-// }) => {
-//   return (
-//     <View style={styles.container}>
-
-//       <View style={styles.header}>
-
-//         <View style={styles.iconContainer}>
-//           <Ionicons
-//             name="storefront-outline"
-//             size={28}
-//             color="#0936B0"
-//           />
-//         </View>
-
-//         <View style={styles.headerText}>
-//           <Text
-//             numberOfLines={1}
-//             style={styles.shopName}>
-//             {shopName}
-//           </Text>
-
-//           <Text style={styles.owner}>
-//             {ownerName}
-//           </Text>
-//         </View>
-
-//       </View>
-
-//       <View style={styles.divider} />
-
-//       <InfoRow
-//         icon="call-outline"
-//         value={mobile}
-//       />
-
-//       <InfoRow
-//         icon="location-outline"
-//         value={address}
-//       />
-
-//       <InfoRow
-//         icon="grid-outline"
-//         value={category}
-//       />
-
-//     </View>
-//   );
-// };
-
-// interface InfoRowProps {
-//   icon: string;
-//   value: string;
-// }
-
-// const InfoRow: React.FC<InfoRowProps> = ({
-//   icon,
-//   value,
-// }) => (
-//   <View style={styles.infoRow}>
-
-//     <Ionicons
-//       name={icon as any}
-//       size={18}
-//       color="#6B7280"
-//     />
-
-//     <Text
-//       numberOfLines={2}
-//       style={styles.infoText}>
-//       {value}
-//     </Text>
-
-//   </View>
-// );
-
-// export default React.memo(ShopInfoCard);
-
-// const styles = StyleSheet.create({
-
-//   container: {
-//     backgroundColor: '#FFFFFF',
-
-//     borderRadius: 20,
-
-//     padding: 18,
-
-//     shadowColor: '#000',
-//     shadowOpacity: 0.08,
-//     shadowRadius: 8,
-
-//     shadowOffset: {
-//       width: 0,
-//       height: 4,
-//     },
-
-//     elevation: 5,
-//   },
-
-//   header: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-
-//   iconContainer: {
-//     width: 58,
-//     height: 58,
-
-//     borderRadius: 29,
-
-//     backgroundColor: '#EEF4FF',
-
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-
-//   headerText: {
-//     flex: 1,
-//     marginLeft: 14,
-//   },
-
-//   shopName: {
-//     fontSize: 18,
-//     fontWeight: '700',
-//     color: '#111827',
-//   },
-
-//   owner: {
-//     marginTop: 4,
-//     fontSize: 14,
-//     color: '#6B7280',
-//   },
-
-//   divider: {
-//     marginVertical: 16,
-//     height: 1,
-//     backgroundColor: '#E5E7EB',
-//   },
-
-//   infoRow: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     marginBottom: 14,
-//   },
-
-//   infoText: {
-//     flex: 1,
-//     marginLeft: 10,
-//     color: '#374151',
-//     fontSize: 15,
-//   },
-
-// });
-
-
-
-
-
-
-
-
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -197,12 +16,26 @@ interface ShopInfoCardProps {
   ownerName: string;
   mobile: string;
   category: string;
+
   address: string;
+  state: string;
+  district: string;
+  block: string;
+  manualAddress: string;
+
+  loadingLocation: boolean;
 
   onChangeShopName: (text: string) => void;
   onChangeOwnerName: (text: string) => void;
   onChangeMobile: (text: string) => void;
   onChangeCategory: (text: string) => void;
+
+  onChangeState: (text: string) => void;
+  onChangeDistrict: (text: string) => void;
+  onChangeBlock: (text: string) => void;
+  onChangeManualAddress: (text: string) => void;
+
+  ongetCurrentLocation: () => void;
 }
 
 const ShopInfoCard: React.FC<ShopInfoCardProps> = ({
@@ -211,36 +44,48 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({
   mobile,
   category,
   address,
+  state,
+  district,
+  block,
+  manualAddress,
+  loadingLocation,
+
   onChangeShopName,
   onChangeOwnerName,
   onChangeMobile,
   onChangeCategory,
+
+  onChangeState,
+  onChangeDistrict,
+  onChangeBlock,
+  onChangeManualAddress,
+
+  ongetCurrentLocation,
 }) => {
+  const [currentLocation, setCurrentLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const [currentAddress, setCurrentAddress] = useState("");
+  const [loadingloading, setLoadingLocation] = useState(true)
+
 
   return (
 
     <View style={styles.container}>
-
       {/* Header */}
-
       <View style={styles.header}>
-
         <View style={styles.headerIcon}>
-
           <Ionicons
             name="storefront-outline"
             size={28}
             color="#0936B0"
           />
-
         </View>
-
         <View style={{ flex: 1 }}>
-
           <Text style={styles.title}>
             Shop Information
           </Text>
-
           <Text style={styles.subtitle}>
             Enter basic details of the vendor.
           </Text>
@@ -342,29 +187,195 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({
 
       </View>
 
+
+
+
+
+
       {/* Current Address */}
+
+      {/* State */}
 
       <View style={styles.fieldContainer}>
 
         <Text style={styles.label}>
-          Current Address
+          State *
         </Text>
 
-        <View style={styles.addressContainer}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.categoryButton}
+          onPress={() => onChangeState('Uttar Pradesh')}>
+
+          <Text
+            style={[
+              styles.categoryText,
+              !state && {
+                color: '#94A3B8',
+              },
+            ]}>
+            {state || 'Select State'}
+          </Text>
 
           <Ionicons
-            name="location-outline"
+            name="chevron-down"
             size={20}
-            color="#EF4444"
+            color="#64748B"
           />
 
-          <Text style={styles.addressText}>
+        </TouchableOpacity>
 
-            {address || 'Fetching current location...'}
+      </View>
 
+
+      {/* District */}
+
+      <View style={styles.fieldContainer}>
+
+        <Text style={styles.label}>
+          District *
+        </Text>
+
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.categoryButton}
+          onPress={() => onChangeDistrict('Gautam Buddha Nagar')}>
+
+          <Text
+            style={[
+              styles.categoryText,
+              !district && {
+                color: '#94A3B8',
+              },
+            ]}>
+            {district || 'Select District'}
+          </Text>
+
+          <Ionicons
+            name="chevron-down"
+            size={20}
+            color="#64748B"
+          />
+
+        </TouchableOpacity>
+
+      </View>
+
+
+      {/* Block */}
+
+      <View style={styles.fieldContainer}>
+
+        <Text style={styles.label}>
+          Block *
+        </Text>
+
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.categoryButton}
+          onPress={() => onChangeBlock('Bisrakh')}>
+
+          <Text
+            style={[
+              styles.categoryText,
+              !block && {
+                color: '#94A3B8',
+              },
+            ]}>
+            {block || 'Select Block'}
+          </Text>
+
+          <Ionicons
+            name="chevron-down"
+            size={20}
+            color="#64748B"
+          />
+
+        </TouchableOpacity>
+
+      </View>
+
+
+      {/* Current GPS Address */}
+
+      <View style={styles.fieldContainer}>
+
+        <View style={styles.addressHeader}>
+
+          <Text style={styles.label}>
+            Current Address
+          </Text>
+
+          <Text style={styles.locationHint}>
+            Tap to refresh
           </Text>
 
         </View>
+
+        <TouchableOpacity
+          activeOpacity={0.75}
+          disabled={loadingLocation}
+          style={styles.addressContainer}
+          onPress={ongetCurrentLocation}>
+
+          <View style={styles.locationIconContainer}>
+            <Ionicons
+              name="location"
+              size={20}
+              color="#2563EB"
+            />
+          </View>
+
+          <Text
+            style={styles.addressText}
+            numberOfLines={2}>
+
+            {loadingLocation
+              ? 'Fetching current location...'
+              : address || 'Tap to get current location'}
+
+          </Text>
+
+          <View style={styles.refreshContainer}>
+
+            {loadingLocation ? (
+              <ActivityIndicator
+                size="small"
+                color="#2563EB"
+              />
+            ) : (
+              <Ionicons
+                name="refresh-outline"
+                size={21}
+                color="#2563EB"
+              />
+            )}
+
+          </View>
+
+        </TouchableOpacity>
+
+      </View>
+
+
+      {/* Manual Address */}
+
+      <View style={styles.fieldContainer}>
+
+        <Text style={{marginBottom:5, fontSize:14, fontWeight:500}}>
+          Enter Address Manually
+        </Text>
+
+        <TextInput
+          style={styles.manualAddressInput}
+          placeholder="Enter complete address"
+          placeholderTextColor="#94A3B8"
+          value={manualAddress}
+          onChangeText={onChangeManualAddress}
+          multiline
+          numberOfLines={4}
+          textAlignVertical="top"
+        />
 
       </View>
 
@@ -447,7 +458,6 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 14,
-
     fontWeight: '600',
 
     color: '#374151',
@@ -501,32 +511,101 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  addressContainer: {
-    flexDirection: 'row',
 
-    alignItems: 'flex-start',
+  addressHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+
+  label: {
+    fontSize: 14,
+    // columnGap:2,
+    fontWeight: '600',
+    color: '#374151',
+  },
+
+  locationHint: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#2563EB',
+  },
+
+  addressContainer: {
+    minHeight: 64,
+
+    flexDirection: 'row',
+    alignItems: 'center',
 
     backgroundColor: '#F8FAFC',
 
+    borderWidth: 1,
+    borderColor: '#DBEAFE',
+
     borderRadius: 14,
 
-    padding: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
 
-    borderWidth: 1,
+  locationIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
 
-    borderColor: '#E5E7EB',
+    backgroundColor: '#EFF6FF',
+
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    flexShrink: 0,
   },
 
   addressText: {
     flex: 1,
 
     marginLeft: 10,
-
-    color: '#374151',
+    marginRight: 8,
 
     fontSize: 14,
+    fontWeight: '500',
+    lineHeight: 20,
 
-    lineHeight: 22,
+    color: '#374151',
   },
 
+  refreshContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+
+    backgroundColor: '#EFF6FF',
+
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    flexShrink: 0,
+  },
+
+
+
+  manualAddressInput: {
+    minHeight: 100,
+
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+
+    borderRadius: 14,
+
+    paddingHorizontal: 15,
+    paddingVertical: 14,
+
+    backgroundColor: '#FFFFFF',
+
+    color: '#111827',
+    fontSize: 15,
+
+    textAlignVertical: 'top',
+  },
 });

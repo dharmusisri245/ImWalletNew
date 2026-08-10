@@ -85,7 +85,15 @@
 
 
 
+
+
+
+
+
+
+
 // it's  paid version of google cloud console Api Dharmu production
+
 
 export interface Coordinates {
     latitude: number;
@@ -181,3 +189,251 @@ export async function reverseGeocode$({
         };
     }
 }
+
+
+
+
+
+
+
+
+// export interface Coordinates {
+//   latitude: number;
+//   longitude: number;
+// }
+
+// export interface AddressResult {
+//   displayName: string;
+//   shortAddress: string;
+// }
+
+// const GEOCODING_KEY = "AIzaSyDw6Tv2HiJQ-ZXRx3jS5hDoWr2picgrRV4";
+
+// export async function reverseGeocode$({
+//   latitude,
+//   longitude,
+// }: Coordinates): Promise<AddressResult> {
+//   const controller = new AbortController();
+
+//   const timeout = setTimeout(() => {
+//     controller.abort();
+//   }, 10000);
+
+//   try {
+//     console.log(
+//       'reverseGeocode$ received latitude:',
+//       latitude,
+//     );
+
+//     console.log(
+//       'reverseGeocode$ received longitude:',
+//       longitude,
+//     );
+
+//     // Safety check
+//     if (
+//       typeof latitude !== 'number' ||
+//       typeof longitude !== 'number' ||
+//       !Number.isFinite(latitude) ||
+//       !Number.isFinite(longitude)
+//     ) {
+//       throw new Error(
+//         `Invalid coordinates: latitude=${latitude}, longitude=${longitude}`,
+//       );
+//     }
+
+//     const url =
+//       `https://maps.googleapis.com/maps/api/geocode/json` +
+//       `?latlng=${latitude},${longitude}` +
+//       `&key=${GEOCODING_KEY}`;
+
+//     console.log(
+//       'Reverse Geocode URL:',
+//       url.replace(
+//         GEOCODING_KEY,
+//         'HIDDEN_KEY',
+//       ),
+//     );
+
+//     const response = await fetch(url, {
+//       signal: controller.signal,
+//     });
+
+//     clearTimeout(timeout);
+
+//     const data = await response.json();
+
+//     console.log(
+//       'Google HTTP Status:',
+//       response.status,
+//     );
+
+//     console.log(
+//       'Google API Status:',
+//       data.status,
+//     );
+
+//     console.log(
+//       'Google Error Message:',
+//       data.error_message,
+//     );
+
+//     if (!response.ok) {
+//       throw new Error(
+//         data.error_message ||
+//           `Google Geocoding HTTP ${response.status}`,
+//       );
+//     }
+
+//     if (
+//       data.status !== 'OK' ||
+//       !data.results?.length
+//     ) {
+//       return {
+//         displayName: 'Address not found',
+//         shortAddress: 'Unknown location',
+//       };
+//     }
+
+//     const result =
+//       data.results.find(
+//         (r: any) =>
+//           r.types?.includes('establishment') ||
+//           r.types?.includes('point_of_interest'),
+//       ) ||
+//       data.results.find(
+//         (r: any) =>
+//           r.types?.includes('subpremise'),
+//       ) ||
+//       data.results[0];
+
+//     return {
+//       displayName: result.formatted_address,
+//       shortAddress: result.formatted_address,
+//     };
+//   } catch (error: any) {
+//     clearTimeout(timeout);
+
+//     console.log(
+//       'Google Reverse Geocode Error:',
+//       error,
+//     );
+
+//     return {
+//       displayName: 'Address unavailable',
+//       shortAddress: 'Unable to fetch address',
+//     };
+//   }
+// }
+
+
+// export async function reverseGeocode$(
+//   coordinates: Coordinates,
+// ): Promise<AddressResult> {
+//   console.log('========== GEOCODING DEBUG ==========');
+
+//   console.log('Received object:', coordinates);
+
+//   console.log(
+//     'Received latitude:',
+//     coordinates?.latitude,
+//   );
+
+//   console.log(
+//     'Received longitude:',
+//     coordinates?.longitude,
+//   );
+
+//   console.log('====================================');
+
+//   const controller = new AbortController();
+
+//   const timeout = setTimeout(() => {
+//     controller.abort();
+//   }, 10000);
+
+//   try {
+//     const url =
+//       `https://maps.googleapis.com/maps/api/geocode/json` +
+//       `?latlng=${coordinates.latitude},${coordinates.longitude}` +
+//       `&key=${GEOCODING_KEY}`;
+
+//     console.log(
+//       'Reverse Geocode URL:',
+//       url.replace(
+//         GEOCODING_KEY,
+//         'HIDDEN_KEY',
+//       ),
+//     );
+
+//     const response = await fetch(url, {
+//       signal: controller.signal,
+//     });
+
+//     clearTimeout(timeout);
+
+//     const data = await response.json();
+
+//     console.log(
+//       'Google HTTP Status:',
+//       response.status,
+//     );
+
+//     console.log(
+//       'Google API Status:',
+//       data.status,
+//     );
+
+//     console.log(
+//       'Google Error Message:',
+//       data.error_message,
+//     );
+
+//     if (!response.ok) {
+//       throw new Error(
+//         data.error_message ||
+//           `HTTP ${response.status}`,
+//       );
+//     }
+
+//     if (
+//       data.status !== 'OK' ||
+//       !data.results?.length
+//     ) {
+//       return {
+//         displayName: 'Address not found',
+//         shortAddress: 'Unknown location',
+//       };
+//     }
+
+//     const result =
+//       data.results.find(
+//         (r: any) =>
+//           r.types?.includes('establishment') ||
+//           r.types?.includes('point_of_interest'),
+//       ) ||
+//       data.results.find(
+//         (r: any) =>
+//           r.types?.includes('subpremise'),
+//       ) ||
+//       data.results[0];
+
+//     return {
+//       displayName: result.formatted_address,
+//       shortAddress: result.formatted_address,
+//     };
+
+//   } catch (error: any) {
+//     clearTimeout(timeout);
+
+//     console.log(
+//       'Google Reverse Geocode Error:',
+//       error,
+//     );
+
+//     return {
+//       displayName: 'Address unavailable',
+//       shortAddress: 'Unable to fetch address',
+//     };
+//   }
+// }

@@ -363,9 +363,6 @@ const AttendanceScreen = () => {
           onCaptured={handleCaptured}
         />
       </Modal>
-
-
-
     </View>
   );
 };
