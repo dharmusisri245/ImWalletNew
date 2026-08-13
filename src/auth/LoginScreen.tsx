@@ -589,24 +589,24 @@ const COLORS = {
 };
 
 type RootStackParamList = {
-  Splash: undefined;
-  Login: undefined;
-  BottomTab: undefined;
+    Splash: undefined;
+    Login: undefined;
+    BottomTab: undefined;
 };
 
 export default function LoginScreen({ onLoginSuccess }: { onLoginSuccess?: (result: any) => void }) {
     // const navigation = useNavigation()
 
-const navigation =
-  useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const navigation =
+        useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-    
+
     const [empId, setEmpId] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(''));
     // const [focusedOtpIndex, setFocusedOtpIndex] = useState(null);
-    const [focusedOtpIndex, setFocusedOtpIndex] =useState<number | null>(null);
+    const [focusedOtpIndex, setFocusedOtpIndex] = useState<number | null>(null);
     // const [step, setStep] = useState('credentials'); // 'credentials' | 'otp'
     const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
     const [loading, setLoading] = useState(false);
@@ -706,7 +706,7 @@ const navigation =
 
             // SAVE refreash token in 
             await KeychainStorage.saveRefreshToken(result.refreshToken)
-            
+
             // Save Employee
             MMKVStorage.saveEmployee(result.employee);
 
@@ -781,8 +781,8 @@ const navigation =
                     style={[styles.cardOuter, { transform: [{ translateY: cardTranslate }], opacity: cardAnim }]}
                 >
                     {/* Blur is used ONLY as a flat background layer — never wraps content directly.
-               Wrapping real content inside <BlurView> is what causes the broken/gray-box
-               layout on Android; this layered approach avoids that entirely. */}
+                        Wrapping real content inside <BlurView> is what causes the broken/gray-box
+                        layout on Android; this layered approach avoids that entirely. */}
                     <BlurView
                         style={StyleSheet.absoluteFill}
                         blurType="light"
@@ -936,7 +936,7 @@ const navigation =
                             <Text style={styles.supportText}>Contact ImWallet Support</Text>
                         </TouchableOpacity>
                     </View>
-                    
+
                 </Animated.View>
 
                 <Text style={styles.footerText}>
@@ -1081,10 +1081,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: COLORS.textMuted,
         fontSize: 10,
-        marginTop: Platform.OS ==='ios' ?-5:10,
-        paddingHorizontal:Platform.OS==='ios'? 70:40,
+        marginTop: Platform.OS === 'ios' ? -5 : 10,
+        paddingHorizontal: Platform.OS === 'ios' ? 70 : 40,
         // marginBottom:Platform.OS ==='ios'?30:0,
-        paddingBottom:Platform.OS==='ios'?50:0
+        paddingBottom: Platform.OS === 'ios' ? 50 : 0
     },
 });
 

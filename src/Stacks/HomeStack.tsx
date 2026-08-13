@@ -12,6 +12,9 @@ import MyReportScreen from '../Screen/servicesScreen/MyReportScreen';
 import NotificationScreen from '../Screen/Dashboard/Notifications/NotificationScreen';
 import { Text, View } from 'react-native';
 import VendorDetails from '../Screen/servicesScreen/VendorDetails';
+import TeamDashboardScreen from '../Screen/Chatbot/TeamDashboard/TeamDashboardScreen';
+import TeamConversationsScreen from '../Screen/Chatbot/TeamDashboard/TeamConversationsScreen';
+import TeamChatScreen from '../Screen/Chatbot/TeamDashboard/TeamChatScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -61,6 +64,23 @@ export default function HomeStack() {
       <Stack.Screen
         name="KycScreen"
         component={KycScreen}
+      />
+      {/* we are adding here randomly manager dashboard releted screen or pages here after thgat we will miove at specifc manager stack ok */}
+
+      <Stack.Screen
+        name='TeamDashBoardScreen'
+        component={TeamDashboardScreen}
+      />
+
+
+      <Stack.Screen
+        name="TeamConversations"
+        component={TeamConversationsScreen}
+      />
+
+      <Stack.Screen
+        name="TeamChatScreen"
+        component={TeamChatScreen}
       />
 
       <Stack.Screen name='LeaveScreen' component={LeaveScreen} />

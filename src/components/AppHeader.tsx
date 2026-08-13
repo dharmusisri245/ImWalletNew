@@ -8,6 +8,7 @@ import {
 } from "react-native";
 // import Ionicons from "react-native-vector-icons/Ionicons";
 import Ionicons from "@react-native-vector-icons/ionicons";
+import {useNavigation} from '@react-navigation/native';
 
 const AppHeader = ({
   profileImage,
@@ -15,6 +16,7 @@ const AppHeader = ({
   onHelpPress,
   onNotificationPress,
 }: any) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.appHeader}>
       <Image
@@ -34,7 +36,7 @@ const AppHeader = ({
       <View style={styles.right}>
         <TouchableOpacity
           style={styles.helpBtn}
-          onPress={onHelpPress}
+          onPress={()=>navigation.navigate("ChatScreen") }
         >
           <Ionicons name="headset-outline" size={16} />
           <Text style={styles.helpText}>Help</Text>

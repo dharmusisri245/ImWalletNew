@@ -7,6 +7,7 @@ import ShopVisitScreen from '../Screen/Visit/ShopVisitScreen';
 import LeadDetailsScreen from '../Screen/Visit/LeadDetailsScreen';
 import FollowUpScreen from '../Screen/Visit/FollowUpScreen';
 import VisitHistoryScreen from '../Screen/Visit/VisitHistoryScreen';
+import ChatScreen from '../Screen/Chatbot/ClienChatbot/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,11 @@ const VisitStack = () => {
       <Stack.Screen
         name="VisitHistory"
         component={VisitHistoryScreen}
+      />
+
+      <Stack.Screen
+      name='ChatScreen'
+      component={ChatScreen}
       />
 
     </Stack.Navigator>

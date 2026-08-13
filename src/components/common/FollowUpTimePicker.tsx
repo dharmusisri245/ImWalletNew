@@ -167,13 +167,13 @@ const FollowUpTimePicker: React.FC<FollowUpTimePickerProps> = ({
 };
 
 export default React.memo(FollowUpTimePicker);
-
+1
 const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
     marginBottom:15
   },
-
+  
   input: {
     height: 56,
 
