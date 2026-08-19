@@ -15,6 +15,7 @@ import VendorDetails from '../Screen/servicesScreen/VendorDetails';
 import TeamDashboardScreen from '../Screen/Chatbot/TeamDashboard/TeamDashboardScreen';
 import TeamConversationsScreen from '../Screen/Chatbot/TeamDashboard/TeamConversationsScreen';
 import TeamChatScreen from '../Screen/Chatbot/TeamDashboard/TeamChatScreen';
+import EmployeeStack from './DrawerStacks/EmployeeDrawerStack/employeeStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,6 +88,7 @@ export default function HomeStack() {
       <Stack.Screen name='MyReportScreen' component={MyReportScreen} />
       <Stack.Screen name='TargetScreen' component={TargetScreen} />
       <Stack.Screen name='Notifications' component={NotificationScreen} />
+      <Stack.Screen name='EmployeeStack' component={EmployeeStack}/>
     </Stack.Navigator>
   );
 }

@@ -560,7 +560,8 @@ import authService from '../auth/rtkApi/authService';
 import { useNavigation } from '@react-navigation/native';
 import { KeychainStorage, MMKVStorage } from '../storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
+import AppSecurityService from '../services/AppSecurityService';
+import Video from 'react-native-video';
 
 
 
@@ -683,69 +684,261 @@ export default function LoginScreen({ onLoginSuccess }: { onLoginSuccess?: (resu
         }
     };
 
+    // const handleLogin = async () => {
+    //     setErrorMsg("");
+
+    //     const code = otp.join("");
+
+    //     if (code.length < OTP_LENGTH) {
+    //         return setErrorMsg(`Please enter the ${OTP_LENGTH}-digit OTP.`);
+    //     }
+
+    //     setLoading(true);
+
+    //     try {
+    //         const result = await authService.verifyOtp({
+    //             employeeId: empId.trim(),
+    //             otp: code,
+    //         });
+
+    //         // Save Access Token
+    //         await KeychainStorage.saveAccessToken(result.accessToken);
+
+
+    //         // SAVE refreash token in 
+    //         await KeychainStorage.saveRefreshToken(result.refreshToken)
+
+    //         // Save Employee
+    //         MMKVStorage.saveEmployee(result.employee);
+
+    //         // navigation.reset({
+    //         //     index: 0,
+    //         //     routes: [{ name: 'BottomTab'}],
+    //         // });
+    //         navigation.reset({
+    //             index: 0,
+    //             routes: [{ name: 'BottomTab' }],
+    //         });
+    //         console.log("navigation reset success");
+    //         console.log('will go to BottomTab');
+
+
+    //     } catch (err: any) {
+    //         console.log(err);
+    //         setErrorMsg(err.message || "Invalid OTP");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
+
     const handleLogin = async () => {
-        setErrorMsg("");
+    setErrorMsg('');
 
-        const code = otp.join("");
+    const code = otp.join('');
 
-        if (code.length < OTP_LENGTH) {
-            return setErrorMsg(`Please enter the ${OTP_LENGTH}-digit OTP.`);
-        }
+    if (code.length < OTP_LENGTH) {
+        return setErrorMsg(
+            `Please enter the ${OTP_LENGTH}-digit OTP.`,
+        );
+    }
 
-        setLoading(true);
+    setLoading(true);
 
-        try {
-            const result = await authService.verifyOtp({
+    try {
+        // ==========================================
+        // 1. VERIFY OTP
+        // ==========================================
+
+        const result =
+            await authService.verifyOtp({
                 employeeId: empId.trim(),
                 otp: code,
             });
 
-            // Save Access Token
-            await KeychainStorage.saveAccessToken(result.accessToken);
+        console.log(
+            'OTP verification successful',
+        );
 
+        // ==========================================
+        // 2. SAVE ACCESS TOKEN
+        // ==========================================
 
-            // SAVE refreash token in 
-            await KeychainStorage.saveRefreshToken(result.refreshToken)
+        await KeychainStorage.saveAccessToken(
+            result.accessToken,
+        );
 
-            // Save Employee
-            MMKVStorage.saveEmployee(result.employee);
+        // ==========================================
+        // 3. SAVE REFRESH TOKEN
+        // ==========================================
 
-            // navigation.reset({
-            //     index: 0,
-            //     routes: [{ name: 'BottomTab'}],
-            // });
+        await KeychainStorage.saveRefreshToken(
+            result.refreshToken,
+        );
+
+        // ==========================================
+        // 4. SAVE EMPLOYEE
+        // ==========================================
+
+        MMKVStorage.saveEmployee(
+            result.employee,
+        );
+
+        // ==========================================
+        // 5. CHECK APP SECURITY
+        // ==========================================
+
+        const securityEnabled =
+            AppSecurityService.isSecurityEnabled();
+
+        console.log(
+            '================================',
+        );
+
+        console.log(
+            'APP SECURITY ENABLED:',
+            securityEnabled,
+        );
+
+        console.log(
+            '================================',
+        );
+
+        // ==========================================
+        // 6. SECURITY OFF
+        // ==========================================
+
+        if (!securityEnabled) {
+            console.log(
+                'Security OFF → Directly opening MainApp',
+            );
+
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'BottomTab' }],
+                routes: [
+                    {name: 'BottomTab'},
+                ],
             });
-            console.log("navigation reset success");
-            console.log('will go to BottomTab');
 
-
-        } catch (err: any) {
-            console.log(err);
-            setErrorMsg(err.message || "Invalid OTP");
-        } finally {
-            setLoading(false);
+            return;
         }
-    };
+
+        // ==========================================
+        // 7. SECURITY ON
+        // ==========================================
+
+        console.log(
+            'Security ON → Authentication required',
+        );
+
+        const authenticated =
+            await AppSecurityService.authenticateAndUnlock();
+
+        // ==========================================
+        // 8. AUTHENTICATION FAILED
+        // ==========================================
+
+        if (!authenticated) {
+            console.log(
+                'Security authentication FAILED',
+            );
+
+            setErrorMsg(
+                'Security verification failed. Please authenticate to continue.',
+            );
+
+            return;
+        }
+
+        // ==========================================
+        // 9. AUTHENTICATION SUCCESS
+        // ==========================================
+
+        console.log(
+            'Security authentication SUCCESS',
+        );
+
+        console.log(
+            'Opening MainApp...',
+        );
+
+        navigation.reset({
+            index: 0,
+            routes: [
+                {name: 'BottomTab'},
+            ],
+        });
+
+    } catch (err: any) {
+        console.log(
+            'Login error:',
+            err,
+        );
+
+        setErrorMsg(
+            err.message || 'Invalid OTP',
+        );
+    } finally {
+        setLoading(false);
+    }
+};
 
 
+
+// const AD_VIDEO_SOURCE = {
+//   uri: 'https://avtshare01.rz.tu-ilmenau.de/avt-vqdb-uhd-1/test_1/segments/cutting_orange_tuil_2000kbps_720p_59.94fps_h264.mp4',
+// };
     return (
         <View style={styles.screen}>
             <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
 
             {/* ---------- Background Advertisement Video ---------- */}
-            {/* <Video
-                source={AD_VIDEO_SOURCE}
-                style={StyleSheet.absoluteFill}
-                resizeMode="cover"
-                repeat
-                muted
-                paused={false}
-                playInBackground={false}
-            /> */}
+          <View style={styles.screen}>
 
+    {/* VIDEO BACKGROUND
+    <Video
+        source={AD_VIDEO_SOURCE}
+        style={StyleSheet.absoluteFill}
+        resizeMode="cover"
+        repeat
+        muted
+        paused={false}
+        playInBackground={false}
+        onLoad={() => {
+            console.log('VIDEO LOADED');
+        }}
+        onError={(error) => {
+            console.log('VIDEO ERROR:', error);
+        }}
+    />
+
+    {/* VIDEO OVERLAY */}
+    {/* <LinearGradient
+        colors={[
+            'rgba(255,255,255,0.15)',
+            'rgba(255,255,255,0.35)',
+            'rgba(245,243,250,0.75)',
+        ]}
+        locations={[0, 0.55, 1]}
+        style={StyleSheet.absoluteFill}
+    />  */}
+
+    {/* YOUR LOGIN CONTENT */}
+    <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContent}
+        enableOnAndroid
+        extraScrollHeight={40}
+        extraHeight={120}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+    >
+
+        {/* everything else */}
+
+    </KeyboardAwareScrollView>
+
+</View>
             <View style={StyleSheet.absoluteFill} />
 
             {/* White wash overlay so the site's clean white background reads through */}

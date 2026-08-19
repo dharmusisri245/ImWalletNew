@@ -1,4 +1,22 @@
-// src/storage/StorageKeys.ts
+// // src/storage/StorageKeys.ts
+
+// export const StorageKeys = {
+//   // MMKV
+//   EMPLOYEE: 'employee',
+//   CHECKED_IN: 'checkedIn',
+//   CHECK_IN_TIME: 'checkInTime',
+//   CHECK_OUT_TIME: 'checkOutTime',
+//   LAST_LOCATION: 'lastLocation',
+//   DEVICE_ID: 'deviceId',
+//   FCM_TOKEN: 'fcmToken',
+//   FIRST_LAUNCH: 'firstLaunch',
+
+//   // Keychain
+//   ACCESS_TOKEN: 'accessToken',
+//   REFRESH_TOKEN: 'refreshToken',
+// } as const;
+
+
 
 export const StorageKeys = {
   // MMKV
@@ -10,6 +28,9 @@ export const StorageKeys = {
   DEVICE_ID: 'deviceId',
   FCM_TOKEN: 'fcmToken',
   FIRST_LAUNCH: 'firstLaunch',
+
+  // App Security
+  APP_SECURITY_ENABLED: 'appSecurityEnabled',
 
   // Keychain
   ACCESS_TOKEN: 'accessToken',

@@ -504,6 +504,7 @@ const locationEmitter = LocationModule
   ? new NativeEventEmitter(LocationModule)
   : null;
 
+  
 class LocationService {
   private ensureModule() {
     if (!LocationModule) {

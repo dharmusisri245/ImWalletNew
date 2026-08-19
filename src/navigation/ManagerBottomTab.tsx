@@ -16,6 +16,7 @@ import TeamDashboardScreen from '../Screen/Chatbot/TeamDashboard/TeamDashboardSc
 
 // Temporary manager screens
 // We will create the real screens next.
+
 const ManagerHomePlaceholder = () => {
   return (
     <View style={styles.placeholder}>

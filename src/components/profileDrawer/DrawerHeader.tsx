@@ -20,7 +20,7 @@ const DrawerHeader = ({onClose}: DrawerHeaderProps) => {
         onPress={onClose}>
         <Ionicons
           name="close"
-          size={20}
+          size={28}
           color="#3A3F4B"
         />
       </TouchableOpacity>
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#F4F6FA',
+    // backgroundColor: '#F4F6FA',
     alignItems: 'center',
     justifyContent: 'center',
   },

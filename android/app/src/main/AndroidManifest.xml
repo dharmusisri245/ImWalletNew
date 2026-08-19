@@ -40,6 +40,10 @@
     <!-- ============================= -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
+    <!-- FOR DEVICE AUTHENTICATION USING BIOM ETRIC IN ANDROID -->
+    
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
     <!-- ============================= -->
     <!-- DEVICE FEATURES -->
     <!-- ============================= -->
@@ -52,41 +56,49 @@
         android:name="android.hardware.location.gps"
         android:required="false"/>
 
+
+
     <application
-        android:name=".MainApplication"
+    android:name=".MainApplication"
+    android:label="@string/app_name"
+    android:icon="@mipmap/ic_launcher"
+    android:roundIcon="@mipmap/ic_launcher"
+    android:allowBackup="false"
+    android:theme="@style/AppTheme"
+    android:supportsRtl="true"
+    android:usesCleartextTraffic="${usesCleartextTraffic}">
+
+    <!-- ========================================= -->
+    <!-- EMPLOYEE BACKGROUND LOCATION SERVICE -->
+    <!-- ========================================= -->
+    <service
+        android:name=".location.tracking.ForegroundLocationService"
+        android:enabled="true"
+        android:exported="false"
+        android:foregroundServiceType="location" />
+
+
+<!-- GOOGLE MAP API KEY DFFGHG -->
+   <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyDgR5tt7cWkz-1iPcS7c095tP_Z3OiJxog"/>
+        
+
+    <activity
+        android:name=".MainActivity"
+        android:exported="true"
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher"
-        android:allowBackup="false"
-        android:theme="@style/AppTheme"
-        android:supportsRtl="true"
-        android:usesCleartextTraffic="${usesCleartextTraffic}">
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode">
 
-        <!--
-        Uncomment these later when you integrate Google Maps.
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+    </activity>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_GOOGLE_MAPS_API_KEY"/>
-        -->
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-    </application>
+</application>
 
 </manifest>

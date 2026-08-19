@@ -34,6 +34,7 @@
     "react": "19.2.3",
     "react-native": "0.86.0",
     "react-native-background-actions": "^4.1.0",
+    "react-native-biometrics": "^3.0.1",
     "react-native-calendars": "^1.1314.0",
     "react-native-config": "^1.6.1",
     "react-native-geolocation-service": "^5.3.1",

@@ -1,84 +1,95 @@
 package com.imwallet.location.tracking
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Looper
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
+import android.content.Intent
+import androidx.core.content.ContextCompat
+
 import com.imwallet.location.model.LocationResult as AppLocationResult
 import com.imwallet.location.model.TrackingConfig
+import com.imwallet.location.tracking.ForegroundLocationService
 
 class TrackingManager(
-    context: Context
+    private val context: Context
 ) {
 
-    private val fusedClient =
-        LocationServices.getFusedLocationProviderClient(context)
+    companion object {
+        private var locationListener:
+                ((AppLocationResult) -> Unit)? = null
 
-    private var callback: LocationCallback? = null
+        private var tracking = false
 
-    private var tracking = false
+        fun dispatchLocation(
+            location: AppLocationResult
+        ) {
+            locationListener?.invoke(location)
+        }
 
-    fun isTracking(): Boolean = tracking
+        fun isCurrentlyTracking(): Boolean {
+            return tracking
+        }
+    }
 
-    @SuppressLint("MissingPermission")
+    fun isTracking(): Boolean {
+        return tracking
+    }
+
     fun startTracking(
         config: TrackingConfig,
         onLocation: (AppLocationResult) -> Unit
     ) {
 
-        if (tracking) return
-
-        val request = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            config.updateInterval
-        )
-            .setMinUpdateIntervalMillis(config.fastestInterval)
-            .setMinUpdateDistanceMeters(config.minDistance)
-            .setWaitForAccurateLocation(config.waitForAccurateLocation)
-            .setMaxUpdateDelayMillis(config.maxUpdateDelay)
-            .build()
-
-        callback = object : LocationCallback() {
-
-            override fun onLocationResult(
-                result: com.google.android.gms.location.LocationResult
-            ) {
-
-                val location = result.lastLocation ?: return
-
-                onLocation(
-                    AppLocationResult(
-                        latitude = location.latitude,
-                        longitude = location.longitude,
-                        accuracy = location.accuracy,
-                        altitude = location.altitude,
-                        speed = location.speed,
-                        bearing = location.bearing,
-                        timestamp = location.time
-                    )
-                )
-            }
+        if (tracking) {
+            return
         }
 
-        fusedClient.requestLocationUpdates(
-            request,
-            callback!!,
-            Looper.getMainLooper()
-        )
-
+        locationListener = onLocation
         tracking = true
+
+        val intent = Intent(
+            context,
+            ForegroundLocationService::class.java
+        ).apply {
+            action = ForegroundLocationService.ACTION_START
+
+            putExtra(
+                ForegroundLocationService.EXTRA_UPDATE_INTERVAL,
+                config.updateInterval
+            )
+
+            putExtra(
+                ForegroundLocationService.EXTRA_FASTEST_INTERVAL,
+                config.fastestInterval
+            )
+
+            putExtra(
+                ForegroundLocationService.EXTRA_MIN_DISTANCE,
+                config.minDistance
+            )
+
+            putExtra(
+                ForegroundLocationService.EXTRA_MAX_UPDATE_DELAY,
+                config.maxUpdateDelay
+            )
+        }
+
+        ContextCompat.startForegroundService(
+            context,
+            intent
+        )
     }
 
     fun stopTracking() {
 
-        callback?.let {
-            fusedClient.removeLocationUpdates(it)
+        val intent = Intent(
+            context,
+            ForegroundLocationService::class.java
+        ).apply {
+            action = ForegroundLocationService.ACTION_STOP
         }
 
-        callback = null
+        context.startService(intent)
+
+        locationListener = null
         tracking = false
     }
 }

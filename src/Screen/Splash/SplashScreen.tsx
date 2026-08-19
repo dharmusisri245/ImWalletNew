@@ -1,4 +1,159 @@
-import React, { useEffect } from 'react';
+// import React, { useEffect } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   Image,
+//   ActivityIndicator,
+// } from 'react-native';
+
+// import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+// import PermissionService from '../../services/PermissionService';
+// import {
+//   MMKVStorage,
+//   KeychainStorage,
+// } from '../../storage';
+// import LocationService from '../../services/LocationService';
+
+// type Props = NativeStackScreenProps<any>;
+
+// const SplashScreen = ({ navigation }: Props) => {
+
+
+// const initializeApp = async () => {
+//   try {
+//     console.log("1. Splash Started");
+
+//     await new Promise(resolve => setTimeout(resolve, 2000));
+//     console.log("2. Delay Finished");
+
+//     console.log("3. Before Location");
+
+//     const locationGranted =
+//       await PermissionService.requestLocationPermission();
+//       // Check if GPS is enabled
+//       // const enabled= await LocationService.ensureGpsEnabled();
+//       // console.log("GPS Enabled:", enabled);
+//       // if(!enabled){
+//       //   console.log("GPS is not enabled. Please enable GPS.");
+//       //   return;
+//       // }
+//       // navigation.replace("Login");
+
+//     console.log("4. Location:", locationGranted);
+
+//     console.log("5. Before Camera");
+
+//     const cameraGranted =
+//       await PermissionService.requestCameraPermission();
+
+//     console.log("6. Camera:", cameraGranted);
+
+//     console.log("7. Before Notification");
+
+//     const notificationGranted =
+//       await PermissionService.requestNotificationPermission();
+
+//     console.log("8. Notification:", notificationGranted);
+
+//     console.log("9. Before Keychain");
+
+//     const accessToken =
+//       await KeychainStorage.getAccessToken();
+
+//     console.log("10. AccessToken:", accessToken);
+
+//     console.log("11. Before MMKV");
+
+//     const employee =
+//       MMKVStorage.getEmployee();
+
+//     console.log("12. Employee:", employee);
+
+//     navigation.replace("Login");
+
+//   } catch (e) {
+//     console.log("ERROR =>", e);
+//   }
+// };
+
+// // const initializeApp = async () => {
+// //   await new Promise(resolve => setTimeout(resolve, 2000));
+
+// //   navigation.replace("Login");
+// // };
+  
+
+
+// useEffect(() => {
+//     initializeApp();
+//   }, []);
+
+//   return (
+//     <View style={styles.container}>
+
+//       <Image
+//         source={require('../../assets/images/logo.png')}
+//         style={styles.logo}
+//         resizeMode="contain"
+//       />
+
+//       <Text style={styles.title}>
+//         ImWallet
+//       </Text>
+
+//       <Text style={styles.subtitle}>
+//         Employee Management System
+//       </Text>
+
+//       <ActivityIndicator
+//         size="large"
+//         color="#2563EB"
+//       />
+
+//     </View>
+//   );
+// };
+
+// export default SplashScreen;
+
+// const styles = StyleSheet.create({
+
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#FFFFFF',
+//   },
+
+//   logo: {
+//     width: 120,
+//     height: 120,
+//     marginBottom: 20,
+//   },
+
+//   title: {
+//     fontSize: 28,
+//     fontWeight: '700',
+//     color: '#111827',
+//   },
+
+//   subtitle: {
+//     marginTop: 8,
+//     marginBottom: 40,
+//     color: '#64748B',
+//     fontSize: 15,
+//   },
+
+// });
+
+
+
+
+
+
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,86 +162,147 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import PermissionService from '../../services/PermissionService';
+import AppSecurityService from '../../services/AppSecurityService';
+
 import {
   MMKVStorage,
   KeychainStorage,
 } from '../../storage';
-import LocationService from '../../services/LocationService';
 
 type Props = NativeStackScreenProps<any>;
 
-const SplashScreen = ({ navigation }: Props) => {
+const SplashScreen = ({navigation}: Props) => {
 
+  const initializeApp = async () => {
+    try {
+      console.log('1. Splash Started');
 
-const initializeApp = async () => {
-  try {
-    console.log("1. Splash Started");
+      // --------------------------------
+      // Splash Delay
+      // --------------------------------
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log("2. Delay Finished");
+      await new Promise(resolve =>
+        setTimeout(resolve, 2000),
+      );
 
-    console.log("3. Before Location");
+      console.log('2. Delay Finished');
 
-    const locationGranted =
-      await PermissionService.requestLocationPermission();
-      // Check if GPS is enabled
-      // const enabled= await LocationService.ensureGpsEnabled();
-      // console.log("GPS Enabled:", enabled);
-      // if(!enabled){
-      //   console.log("GPS is not enabled. Please enable GPS.");
-      //   return;
-      // }
-      // navigation.replace("Login");
+      // --------------------------------
+      // Location Permission
+      // --------------------------------
 
-    console.log("4. Location:", locationGranted);
+      console.log(
+        '3. Before Location',
+      );
 
-    console.log("5. Before Camera");
+      const locationGranted =
+        await PermissionService.requestLocationPermission();
 
-    const cameraGranted =
-      await PermissionService.requestCameraPermission();
+      console.log(
+        '4. Location:',
+        locationGranted,
+      );
 
-    console.log("6. Camera:", cameraGranted);
+      // --------------------------------
+      // Camera Permission
+      // --------------------------------
 
-    console.log("7. Before Notification");
+      console.log(
+        '5. Before Camera',
+      );
 
-    const notificationGranted =
-      await PermissionService.requestNotificationPermission();
+      const cameraGranted =
+        await PermissionService.requestCameraPermission();
 
-    console.log("8. Notification:", notificationGranted);
+      console.log(
+        '6. Camera:',
+        cameraGranted,
+      );
 
-    console.log("9. Before Keychain");
+      // --------------------------------
+      // Notification Permission
+      // --------------------------------
 
-    const accessToken =
-      await KeychainStorage.getAccessToken();
+      console.log(
+        '7. Before Notification',
+      );
 
-    console.log("10. AccessToken:", accessToken);
+      const notificationGranted =
+        await PermissionService.requestNotificationPermission();
 
-    console.log("11. Before MMKV");
+      console.log(
+        '8. Notification:',
+        notificationGranted,
+      );
 
-    const employee =
-      MMKVStorage.getEmployee();
+      // --------------------------------
+      // Keychain
+      // --------------------------------
 
-    console.log("12. Employee:", employee);
+      console.log(
+        '9. Before Keychain',
+      );
 
-    navigation.replace("Login");
+      const accessToken =
+        await KeychainStorage.getAccessToken();
 
-  } catch (e) {
-    console.log("ERROR =>", e);
-  }
-};
+      console.log(
+        '10. AccessToken:',
+        accessToken,
+      );
 
-// const initializeApp = async () => {
-//   await new Promise(resolve => setTimeout(resolve, 2000));
+      // --------------------------------
+      // MMKV
+      // --------------------------------
 
-//   navigation.replace("Login");
-// };
-  
+      console.log(
+        '11. Before MMKV',
+      );
 
+      const employee =
+        MMKVStorage.getEmployee();
 
-useEffect(() => {
+      console.log(
+        '12. Employee:',
+        employee,
+      );
+
+      // --------------------------------
+      // APP SECURITY INITIALIZATION
+      // --------------------------------
+
+      console.log(
+        '13. Initializing App Security',
+      );
+
+      AppSecurityService.initialize();
+
+      console.log(
+        '14. App Security Enabled:',
+        AppSecurityService.isSecurityEnabled(),
+      );
+
+      // --------------------------------
+      // Continue to Login
+      // --------------------------------
+
+      console.log(
+        '15. Navigating to Login',
+      );
+      navigation.replace('Login');
+      
+    } catch (e) {
+      console.log(
+        'SPLASH ERROR =>',
+        e,
+      );
+    }
+  };
+
+  useEffect(() => {
     initializeApp();
   }, []);
 
@@ -119,7 +335,6 @@ useEffect(() => {
 export default SplashScreen;
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -145,11 +360,5 @@ const styles = StyleSheet.create({
     color: '#64748B',
     fontSize: 15,
   },
-
 });
-
-
-
-
-
 

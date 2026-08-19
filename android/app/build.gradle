@@ -88,6 +88,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [
+        GOOGLE_MAPS_API_KEY: project.findProperty('AIzaSyDgR5tt7cWkz-1iPcS7c095tP_Z3OiJxog') ?: ""
+    ]
     }
     signingConfigs {
         debug {

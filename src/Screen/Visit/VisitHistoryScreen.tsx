@@ -17,7 +17,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import AppHeader from '../../components/AppHeader';
 
-
 const FILTERS = [
   'Today',
   'Yesterday',

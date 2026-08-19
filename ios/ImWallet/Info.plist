@@ -26,6 +26,12 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+
+
+	<!-- FOR DEVICE AUTHENTICATION OJ IOS  -->
+    <key>NSFaceIDUsageDescription</key>
+    <string>ImWallet uses Face ID to securely protect your account.</string>
+	
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

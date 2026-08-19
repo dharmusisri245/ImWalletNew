@@ -1,3 +1,23 @@
+// import { StyleSheet, Text, View } from 'react-native'
+// import React from 'react'
+
+// const AllQueries = () => {
+//   return (
+//     <View>
+//       <Text>AllQueries</Text>
+//     </View>
+//   )
+// }
+
+// export default AllQueries
+
+// const styles = StyleSheet.create({})
+
+
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
@@ -11,13 +31,13 @@ import {
 import EmployeeTrackingService, {
   EmployeeLocation,
   TrackingState,
-} from '../../services/tracking/EmployeeTrackingService';
+} from '../../../../services/tracking/EmployeeTrackingService';
 
 interface Props {
   navigation?: any;
 }
 
-const LiveTrackingScreen: React.FC<Props> = ({
+const AllQueries: React.FC<Props> = ({
   navigation,
 }) => {
   const [trackingState, setTrackingState] =
@@ -412,7 +432,7 @@ const LiveTrackingScreen: React.FC<Props> = ({
   );
 };
 
-export default LiveTrackingScreen;
+export default AllQueries;
 
 const styles = StyleSheet.create({
   container: {
