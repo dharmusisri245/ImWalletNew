@@ -27,6 +27,7 @@ import Toast from 'react-native-toast-message';
 import { MOCK_EMPLOYEE } from '../../components/config/mockEmployeeConfig';
 import CompanyHeader from '../../components/CompanyHeader';
 import DistanceService from '../../services/DistanceService';
+import EmployeeTrackingService from '../../services/tracking/EmployeeTrackingService';
 
 const office = MOCK_EMPLOYEE.office;
 
@@ -188,8 +189,78 @@ const AttendanceScreen = () => {
     }
   };
 
+  // const handleCaptured = async (result: CaptureResult) => {
+  //   setSubmitting(true);
+  //   try {
+  //     const attendance = {
+  //       id: Date.now().toString(),
+
+  //       employeeId: result.employeeId,
+  //       employeeName: result.employeeName,
+
+  //       type: activeMode,
+
+  //       photoUri: result.photoUri,
+
+  //       latitude: result.latitude,
+  //       longitude: result.longitude,
+
+  //       address: result.address,
+
+  //       distanceFromOfficeMeters: result.distanceFromOfficeMeters,
+
+  //       insideOfficeRadius: result.insideOfficeRadius,
+
+  //       timestamp: result.timestamp,
+
+  //       synced: false,
+  //     };
+
+  //     await AttendanceStorage.save(attendance);
+
+  //     if (activeMode === 'check-in') {
+  //       setCheckedIn(true);
+  //       setActiveMode('check-out');
+  //     } else {
+  //       setCheckedIn(false);
+  //       setActiveMode('check-in');
+  //     }
+
+  //     // Close camera
+  //     setCameraVisible(false);
+
+  //     // Show Success Toast
+  //     Toast.show({
+  //       type: 'success',
+  //       text1:
+  //         activeMode === 'check-in'
+  //           ? 'Check-In Successful'
+  //           : 'Check-Out Successful',
+  //       text2: 'Attendance submitted successfully.',
+  //       visibilityTime: 2000,
+  //     });
+
+  //     // Navigate after a short delay
+  //     setTimeout(() => {
+  //       navigate.navigate('HomeScreen' as never);
+  //     }, 1200);
+
+  //   } catch (error) {
+  //     Toast.show({
+  //       type: 'error',
+  //       text1: 'Failed',
+  //       text2: 'Unable to save attendance.',
+  //     });
+  //   }
+  // };
+
+
+
+  // HERE WE HAVE TO APPLY ALSO AFTER MARK ATTENDNACE INSTENTLY WE AHVR TO TRACK OR GETTINGF EMPLOYEE LAT LN F AT SPECIFIC TIME INTERVAL 
+
   const handleCaptured = async (result: CaptureResult) => {
     setSubmitting(true);
+
     try {
       const attendance = {
         id: Date.now().toString(),
@@ -206,54 +277,123 @@ const AttendanceScreen = () => {
 
         address: result.address,
 
-        distanceFromOfficeMeters: result.distanceFromOfficeMeters,
+        distanceFromOfficeMeters:
+          result.distanceFromOfficeMeters,
 
-        insideOfficeRadius: result.insideOfficeRadius,
+        insideOfficeRadius:
+          result.insideOfficeRadius,
 
         timestamp: result.timestamp,
 
         synced: false,
       };
 
+      // ==========================================
+      // 1. SAVE ATTENDANCE
+      // ==========================================
+
       await AttendanceStorage.save(attendance);
 
+      console.log(
+        '[Attendance] Attendance saved:',
+        activeMode,
+      );
+
+      // ==========================================
+      // 2. START LOCATION TRACKING AFTER CHECK-IN
+      // ==========================================
+
       if (activeMode === 'check-in') {
+        try {
+          await EmployeeTrackingService.startTracking();
+
+          console.log(
+            '[Attendance] Employee location tracking started',
+          );
+        } catch (trackingError) {
+          console.error(
+            '[Attendance] Failed to start location tracking:',
+            trackingError,
+          );
+        }
+
         setCheckedIn(true);
         setActiveMode('check-out');
-      } else {
+      }
+
+      // ==========================================
+      // 3. STOP LOCATION TRACKING AFTER CHECK-OUT
+      // ==========================================
+
+      if (activeMode === 'check-out') {
+        try {
+          await EmployeeTrackingService.stopTracking();
+
+          console.log(
+            '[Attendance] Employee location tracking stopped',
+          );
+        } catch (trackingError) {
+          console.error(
+            '[Attendance] Failed to stop location tracking:',
+            trackingError,
+          );
+        }
+
         setCheckedIn(false);
         setActiveMode('check-in');
       }
 
-      // Close camera
+      // ==========================================
+      // 4. CLOSE CAMERA
+      // ==========================================
+
       setCameraVisible(false);
 
-      // Show Success Toast
+      // ==========================================
+      // 5. SUCCESS MESSAGE
+      // ==========================================
+
       Toast.show({
         type: 'success',
+
         text1:
           activeMode === 'check-in'
             ? 'Check-In Successful'
             : 'Check-Out Successful',
-        text2: 'Attendance submitted successfully.',
+
+        text2:
+          activeMode === 'check-in'
+            ? 'Location tracking has started.'
+            : 'Location tracking has stopped.',
+
         visibilityTime: 2000,
       });
 
-      // Navigate after a short delay
+      // ==========================================
+      // 6. NAVIGATE HOME
+      // ==========================================
+
       setTimeout(() => {
         navigate.navigate('HomeScreen' as never);
       }, 1200);
 
     } catch (error) {
+      console.error(
+        '[Attendance] Attendance error:',
+        error,
+      );
+
       Toast.show({
         type: 'error',
         text1: 'Failed',
         text2: 'Unable to save attendance.',
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  
+
 
   return (
     <View style={styles.screen}>
@@ -339,7 +479,7 @@ const AttendanceScreen = () => {
         statusBarTranslucent
         onRequestClose={() => setCameraVisible(false)}
       >
-        <CameraCaptureScreen
+        {/* <CameraCaptureScreen
           visible={cameraVisible}
           mode={activeMode}
           // employeeName={CURRENT_EMPLOYEE.name}
@@ -348,7 +488,6 @@ const AttendanceScreen = () => {
           // distanceFromOfficeMeters={distance}
           // distanceFromOffice={distanceFromOffice}
           distanceFromOfficeMeters={distanceFromOffice}
-          mode={activeMode}
           employeeName={office.name}
           employeeId={office.id}
           employeeType={office.type}
@@ -359,6 +498,35 @@ const AttendanceScreen = () => {
           }
           currentLocation={currentLocation}
           currentAddress={currentAddress}
+          onClose={() => setCameraVisible(false)}
+          onCaptured={handleCaptured}
+        /> */}
+
+        <CameraCaptureScreen
+          visible={cameraVisible}
+          mode={activeMode}
+
+          // employeeName={CURRENT_EMPLOYEE.name}
+          // employeeId={CURRENT_EMPLOYEE.id}
+          // employeeType={CURRENT_EMPLOYEE.type}
+          // distanceFromOfficeMeters={distance}
+          // distanceFromOffice={distanceFromOffice}
+
+          distanceFromOfficeMeters={distanceFromOffice}
+
+          employeeName={office.name}
+          employeeId={office.id}
+          employeeType={office.type}
+
+          office={
+            office.type === 'office'
+              ? ASSIGNED_OFFICE
+              : undefined
+          }
+
+          currentLocation={currentLocation}
+          currentAddress={currentAddress}
+
           onClose={() => setCameraVisible(false)}
           onCaptured={handleCaptured}
         />

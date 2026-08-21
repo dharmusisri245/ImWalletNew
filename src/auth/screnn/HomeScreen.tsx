@@ -175,8 +175,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
+  View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import DashboardHeader from '../../components/Dashboard/DashboardHeader';
 import SearchBar from '../../components/Dashboard/SearchBar';
 import NotificationCard from '../../components/Dashboard/notifications/NotificationCard';
@@ -202,6 +203,9 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [checkedIn, setCheckedIn] = useState(false);
   const [activeMode, setActiveMode] = useState<'check-in' | 'check-out'>('check-in');
+
+ 
+const insets = useSafeAreaInsets()
 
   const [summary, setSummary] = useState({
     checkInTime: '',
@@ -276,7 +280,11 @@ const scrollHandler = useAnimatedScrollHandler({
 
 
 return (
-  <SafeAreaView style={styles.container}>
+
+  // <View style={{flex:1, paddingTop:insets.top}}>
+  <SafeAreaView style={styles.container}
+  edges={['top']}
+  >
 
     <Animated.ScrollView
       contentContainerStyle={styles.content}
@@ -331,6 +339,7 @@ return (
     </Animated.ScrollView>
 
   </SafeAreaView>
+  // </View>
 );
 };
 

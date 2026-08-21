@@ -21,9 +21,85 @@ export default function BottomTab() {
 
   return (
     <Tab.Navigator
+      // screenOptions={({ route }) => ({
+      //   headerShown: false,
+      //   tabBarShowLabel: true,
+      //   tabBarActiveTintColor: '#2563EB',
+      //   tabBarInactiveTintColor: '#7C8798',
+
+      //   tabBarLabelStyle: {
+      //     fontSize: 11,
+      //     fontWeight: '600',
+      //   },
+
+      //   // tabBarStyle: {
+      //   //   height: 65,
+      //   // },
+
+      //   tabBarStyle: {
+      //     backgroundColor: '#FFFFFF',
+      //     borderTopColor: '#E5E7EB',
+      //     borderTopWidth: 1,
+      //   },
+
+      //   tabBarIcon: ({ focused, color, size }) => {
+      //     let iconName:
+      //       | 'home'
+      //       | 'home-outline'
+      //       | 'grid'
+      //       | 'grid-outline'
+      //       | 'bar-chart'
+      //       | 'bar-chart-outline'
+      //       | 'wallet'
+      //       | 'wallet-outline'
+      //       | 'person'
+      //       | 'person-outline' = 'home-outline';
+
+      //     switch (route.name) {
+      //       case 'Home':
+      //         iconName = focused ? 'home' : 'home-outline';
+      //         break;
+
+      //       case 'Services':
+      //         iconName = focused ? 'grid' : 'grid-outline';
+      //         break;
+
+      //       case 'Reports':
+      //         iconName = focused ? 'bar-chart' : 'bar-chart-outline';
+      //         break;
+
+      //       // case 'Wallet':
+      //       //   iconName = focused ? 'wallet' : 'wallet-outline';
+      //       //   break;
+
+      //       // case 'Visit':
+      //       //   iconName = focused ? 'storefront' : 'storefront-outline';
+      //       //   break;
+
+      //       case 'Visit':
+      //         iconName = focused ? 'business' : 'business-outline';
+      //         break;
+
+      //       case 'Profile':
+      //         iconName = focused ? 'person' : 'person-outline';
+      //         break;
+      //     }
+
+      //     return (
+      //       <Ionicons
+      //         name={iconName}
+      //         size={size ?? 24}
+      //         color={color}
+      //       />
+      //     );
+      //   },
+      // })}
+
       screenOptions={({ route }) => ({
         headerShown: false,
+
         tabBarShowLabel: true,
+
         tabBarActiveTintColor: '#2563EB',
         tabBarInactiveTintColor: '#7C8798',
 
@@ -33,7 +109,9 @@ export default function BottomTab() {
         },
 
         tabBarStyle: {
-          height: 65,
+          backgroundColor: '#FFFFFF',
+          borderTopColor: '#E5E7EB',
+          borderTopWidth: 1,
         },
 
         tabBarIcon: ({ focused, color, size }) => {
@@ -61,14 +139,6 @@ export default function BottomTab() {
             case 'Reports':
               iconName = focused ? 'bar-chart' : 'bar-chart-outline';
               break;
-
-            // case 'Wallet':
-            //   iconName = focused ? 'wallet' : 'wallet-outline';
-            //   break;
-
-            // case 'Visit':
-            //   iconName = focused ? 'storefront' : 'storefront-outline';
-            //   break;
 
             case 'Visit':
               iconName = focused ? 'business' : 'business-outline';
