@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { KeychainStorage, MMKVStorage } from '../storage';
 
 export default function Logout() {
   const navigation = useNavigation();
@@ -17,11 +18,22 @@ export default function Logout() {
         {
           text: 'Logout',
           style: 'destructive',
-          onPress: () => {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
+          onPress: async () => {
+            try {
+              console.log('logout succesfull');
+              await KeychainStorage.removeAccessToken;
+              await KeychainStorage.removeRefreshToken;
+
+              // remove employee data
+              MMKVStorage.clearAll();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            } catch (err) {
+              console.log(`Logout failed pleadse again ${err}`);
+            }
+
           },
         },
       ]

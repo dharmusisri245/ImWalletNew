@@ -176,131 +176,318 @@ type Props = NativeStackScreenProps<any>;
 
 const SplashScreen = ({navigation}: Props) => {
 
-  const initializeApp = async () => {
-    try {
-      console.log('1. Splash Started');
+  // const initializeApp = async () => {
+  //   try {
+  //     console.log('1. Splash Started');
 
-      // --------------------------------
-      // Splash Delay
-      // --------------------------------
+  //     // --------------------------------
+  //     // Splash Delay
+  //     // --------------------------------
 
-      await new Promise(resolve =>
-        setTimeout(resolve, 2000),
-      );
+  //     await new Promise(resolve =>
+  //       setTimeout(resolve, 2000),
+  //     );
 
-      console.log('2. Delay Finished');
+  //     console.log('2. Delay Finished');
 
-      // --------------------------------
-      // Location Permission
-      // --------------------------------
+  //     // --------------------------------
+  //     // Location Permission
+  //     // --------------------------------
 
-      console.log(
-        '3. Before Location',
-      );
+  //     console.log(
+  //       '3. Before Location',
+  //     );
 
-      const locationGranted =
-        await PermissionService.requestLocationPermission();
+  //     const locationGranted =
+  //       await PermissionService.requestLocationPermission();
 
-      console.log(
-        '4. Location:',
-        locationGranted,
-      );
+  //     console.log(
+  //       '4. Location:',
+  //       locationGranted,
+  //     );
 
-      // --------------------------------
-      // Camera Permission
-      // --------------------------------
+  //     // --------------------------------
+  //     // Camera Permission
+  //     // --------------------------------
 
-      console.log(
-        '5. Before Camera',
-      );
+  //     console.log(
+  //       '5. Before Camera',
+  //     );
 
-      const cameraGranted =
-        await PermissionService.requestCameraPermission();
+  //     const cameraGranted =
+  //       await PermissionService.requestCameraPermission();
 
-      console.log(
-        '6. Camera:',
-        cameraGranted,
-      );
+  //     console.log(
+  //       '6. Camera:',
+  //       cameraGranted,
+  //     );
 
-      // --------------------------------
-      // Notification Permission
-      // --------------------------------
+  //     // --------------------------------
+  //     // Notification Permission
+  //     // --------------------------------
 
-      console.log(
-        '7. Before Notification',
-      );
+  //     console.log(
+  //       '7. Before Notification',
+  //     );
 
-      const notificationGranted =
-        await PermissionService.requestNotificationPermission();
+  //     const notificationGranted =
+  //       await PermissionService.requestNotificationPermission();
 
-      console.log(
-        '8. Notification:',
-        notificationGranted,
-      );
+  //     console.log(
+  //       '8. Notification:',
+  //       notificationGranted,
+  //     );
 
-      // --------------------------------
-      // Keychain
-      // --------------------------------
+  //     // --------------------------------
+  //     // Keychain
+  //     // --------------------------------
 
-      console.log(
-        '9. Before Keychain',
-      );
+  //     console.log(
+  //       '9. Before Keychain',
+  //     );
 
-      const accessToken =
-        await KeychainStorage.getAccessToken();
+  //     const accessToken =
+  //       await KeychainStorage.getAccessToken();
 
-      console.log(
-        '10. AccessToken:',
-        accessToken,
-      );
+  //     console.log(
+  //       '10. AccessToken:',
+  //       accessToken,
+  //     );
 
-      // --------------------------------
-      // MMKV
-      // --------------------------------
+  //     // --------------------------------
+  //     // MMKV
+  //     // --------------------------------
 
-      console.log(
-        '11. Before MMKV',
-      );
+  //     console.log(
+  //       '11. Before MMKV',
+  //     );
 
-      const employee =
-        MMKVStorage.getEmployee();
+  //     const employee =
+  //       MMKVStorage.getEmployee();
 
-      console.log(
-        '12. Employee:',
-        employee,
-      );
+  //     console.log(
+  //       '12. Employee:',
+  //       employee,
+  //     );
 
-      // --------------------------------
-      // APP SECURITY INITIALIZATION
-      // --------------------------------
+  //     // --------------------------------
+  //     // APP SECURITY INITIALIZATION
+  //     // --------------------------------
 
-      console.log(
-        '13. Initializing App Security',
-      );
+  //     console.log(
+  //       '13. Initializing App Security',
+  //     );
 
-      AppSecurityService.initialize();
+  //     AppSecurityService.initialize();
 
-      console.log(
-        '14. App Security Enabled:',
-        AppSecurityService.isSecurityEnabled(),
-      );
+  //     console.log(
+  //       '14. App Security Enabled:',
+  //       AppSecurityService.isSecurityEnabled(),
+  //     );
 
-      // --------------------------------
-      // Continue to Login
-      // --------------------------------
+  //     // --------------------------------
+  //     // Continue to Login
+  //     // --------------------------------
 
-      console.log(
-        '15. Navigating to Login',
-      );
-      navigation.replace('Login');
+  //     console.log(
+  //       '15. Navigating to Login',
+  //     );
+  //     navigation.replace('Login');
       
-    } catch (e) {
+  //   } catch (e) {
+  //     console.log(
+  //       'SPLASH ERROR =>',
+  //       e,
+  //     );
+  //   }
+  // };
+
+
+
+const initializeApp = async () => {
+  try {
+    console.log('1. Splash Started');
+
+    // --------------------------------
+    // Splash Delay
+    // --------------------------------
+
+    await new Promise(resolve =>
+      setTimeout(resolve, 2000),
+    );
+
+    console.log('2. Delay Finished');
+
+    // --------------------------------
+    // Location Permission
+    // --------------------------------
+
+    console.log('3. Before Location');
+
+    const locationGranted =
+      await PermissionService.requestLocationPermission();
+
+    console.log('4. Location:', locationGranted);
+
+    // --------------------------------
+    // Camera Permission
+    // --------------------------------
+
+    console.log('5. Before Camera');
+
+    const cameraGranted =
+      await PermissionService.requestCameraPermission();
+
+    console.log('6. Camera:', cameraGranted);
+
+    // --------------------------------
+    // Notification Permission
+    // --------------------------------
+
+    console.log('7. Before Notification');
+
+    const notificationGranted =
+      await PermissionService.requestNotificationPermission();
+
+    console.log(
+      '8. Notification:',
+      notificationGranted,
+    );
+
+    // --------------------------------
+    // Keychain
+    // --------------------------------
+
+    console.log('9. Before Keychain');
+
+    const accessToken =
+      await KeychainStorage.getAccessToken();
+
+    console.log(
+      '10. AccessToken:',
+      accessToken,
+    );
+
+    // --------------------------------
+    // MMKV
+    // --------------------------------
+
+    console.log('11. Before MMKV');
+
+    const employee =
+      MMKVStorage.getEmployee();
+
+    console.log(
+      '12. Employee:',
+      employee,
+    );
+
+    // --------------------------------
+    // APP SECURITY
+    // --------------------------------
+
+    console.log(
+      '13. Initializing App Security',
+    );
+
+    AppSecurityService.initialize();
+
+    const securityEnabled =
+      AppSecurityService.isSecurityEnabled();
+
+    console.log(
+      '14. App Security Enabled:',
+      securityEnabled,
+    );
+
+    // --------------------------------
+    // CHECK LOGIN
+    // --------------------------------
+
+    console.log(
+      '15. Checking existing login...',
+    );
+
+    const isLoggedIn =
+      !!accessToken && !!employee;
+
+    console.log(
+      '16. Is Logged In:',
+      isLoggedIn,
+    );
+
+    // --------------------------------
+    // NO LOGIN
+    // --------------------------------
+
+    if (!isLoggedIn) {
       console.log(
-        'SPLASH ERROR =>',
-        e,
+        '17. No saved login → Login',
+      );
+
+      navigation.replace('Login');
+      return;
+    }
+
+    // --------------------------------
+    // EXISTING LOGIN
+    // --------------------------------
+
+    console.log(
+      '17. Existing user found',
+    );
+
+    console.log(
+      'Employee:',
+      employee,
+    );
+
+    // --------------------------------
+    // SECURITY CHECK
+    // --------------------------------
+
+    if (securityEnabled) {
+      console.log(
+        '18. Security enabled → Authentication',
+      );
+
+      const authenticated =
+        await AppSecurityService.authenticateAndUnlock();
+
+      if (!authenticated) {
+        console.log(
+          '19. Authentication failed → Login',
+        );
+
+        navigation.replace('Login');
+        return;
+      }
+
+      console.log(
+        '19. Authentication successful',
       );
     }
-  };
+
+    // --------------------------------
+    // OPEN APP
+    // --------------------------------
+
+    console.log(
+      '20. Existing session → BottomTab',
+    );
+
+    navigation.replace('BottomTab');
+
+  } catch (e) {
+    console.log(
+      'SPLASH ERROR =>',
+      e,
+    );
+
+    navigation.replace('Login');
+  }
+};
+
 
   useEffect(() => {
     initializeApp();

@@ -164,34 +164,66 @@ interface Props {
 }
 
 const GlobalSearchBar: React.FC<Props> = ({ value, onChange }) => {
+  const inputRef = React.useRef<TextInput>(null);
   return (
+    // <View style={styles.searchRow}>
+    //   <View style={styles.searchBox}>
+    //     <Text style={styles.searchIcon}>🔍</Text>
+    //     <TextInput
+    //       value={value}
+    //       onChangeText={onChange}
+    //       placeholder="Search with ImWallet"
+    //       placeholderTextColor="#999"
+    //       autoFocus={true}
+    //       style={styles.searchInput}
+    //     />
+    //     <View style={styles.icons}>
+    //       <MaterialCommunityIcons
+    //         name="qrcode-scan"
+    //         size={24}
+    //         color="#2563EB"
+    //       />
+    //       <MaterialCommunityIcons
+    //         name="microphone"
+    //         size={27}
+    //         color="#2e91e2"
+    //       />
+    //     </View>
+
+
+    //   </View>
+    // </View>
     <View style={styles.searchRow}>
-      <View style={styles.searchBox}>
-        <Text style={styles.searchIcon}>🔍</Text>
-        <TextInput
-          value={value}
-          onChangeText={onChange}
-          placeholder="Search with ImWallet"
-          placeholderTextColor="#999"
-          autoFocus={true}
-          style={styles.searchInput}
-        />
-        <View style={styles.icons}>
-          <MaterialCommunityIcons
-            name="qrcode-scan"
-            size={24}
-            color="#2563EB"
-          />
-          <MaterialCommunityIcons
-            name="microphone"
-            size={27}
-            color="#2e91e2"
-          />
-        </View>
+    <TouchableOpacity
+  activeOpacity={1}
+  onPress={() => inputRef.current?.focus()}
+  style={styles.searchBox}
+>
+  <Text style={styles.searchIcon}>🔍</Text>
 
+  <TextInput
+    ref={inputRef}
+    value={value}
+    onChangeText={onChange}
+    placeholder="Search with ImWallet"
+    placeholderTextColor="#999"
+    style={styles.searchInput}
+  />
 
-      </View>
-    </View>
+  <View style={styles.icons}>
+    <MaterialCommunityIcons
+      name="qrcode-scan"
+      size={24}
+      color="#2563EB"
+    />
+    <MaterialCommunityIcons
+      name="microphone"
+      size={27}
+      color="#2e91e2"
+    />
+  </View>
+</TouchableOpacity>
+</View>
   );
 };
 
